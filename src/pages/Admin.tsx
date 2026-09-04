@@ -2617,8 +2617,8 @@ export default function Admin({
 
                 {/* Section B.5: Floating Contact Buttons (WhatsApp & Call) */}
                 <div className="space-y-4 pt-4 border-t border-[#F2E4E2]">
-                  <h3 className="text-xs font-bold text-[#FF2D2D] uppercase tracking-wider block font-mono">Floating Support Widgets (WhatsApp & Call)</h3>
-                  <p className="text-[11px] text-[#475467]">Enable high-converting sticky chat and click-to-call floating buttons to receive instant customer leads directly on your phone.</p>
+                  <h3 className="text-xs font-bold text-[#FF2D2D] uppercase tracking-wider block font-mono">Floating Support Widgets (AI Assistant, WhatsApp & Call)</h3>
+                  <p className="text-[11px] text-[#475467]">Enable sticky AI chatbot, WhatsApp chat, and click-to-call floating buttons to provide instant answers and customer support.</p>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-[#FFF7F5] border border-[#F2E4E2] p-5 rounded-2xl text-left">
                     <div className="space-y-2 md:col-span-2">
