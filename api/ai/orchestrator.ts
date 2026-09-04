@@ -368,9 +368,7 @@ For a custom price quote tailored to your exact project scope, submit a request 
 
   const fallbackAnswer = `I couldn't find a direct answer to this specific inquiry in our current database.
 
-Your question has been submitted directly to our support team. A team representative will review it and respond within 24 hours.
-
-Ticket #${ticketData.ticketNumber}`;
+Your question has been submitted directly to our support team. A team representative will review it and respond within 24 hours.`;
 
   try {
     const asstMsgId = `msg_a_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;

@@ -701,7 +701,7 @@ export default function FAQ({ setRoute, siteContent }: FAQProps) {
                             </span>
                           </div>
                           <p className="text-xs text-amber-900/80 dark:text-amber-300">
-                            {t("Our staff will review this inquiry. You can track answers under the 'My Tickets' tab.")}
+                            {t("Our staff will review this inquiry. You can track answers under the 'My Request' tab.")}
                           </p>
                         </div>
                       )}
