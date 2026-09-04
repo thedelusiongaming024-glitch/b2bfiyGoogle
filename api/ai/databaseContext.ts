@@ -12,6 +12,11 @@ export interface LiveDatabaseContext {
   faqsText: string;
   knowledgeDocsText: string;
   compiledFullContext: string;
+  packages: any[];
+  portfolios: any[];
+  faqs: Array<{ id: string; question: string; answer: string; category_name: string | null }>;
+  knowledgeDocs: Array<{ id: string; title: string; content: string }>;
+  siteContent: any;
 }
 
 let cachedContext: LiveDatabaseContext | null = null;
@@ -174,6 +179,11 @@ ${knowledgeDocsText}
       faqsText,
       knowledgeDocsText,
       compiledFullContext,
+      packages: packagesData,
+      portfolios: portfoliosData,
+      faqs: faqRows,
+      knowledgeDocs: docRows,
+      siteContent,
     };
     lastCacheTime = now;
 
@@ -192,6 +202,11 @@ ${knowledgeDocsText}
       faqsText: "",
       knowledgeDocsText: "",
       compiledFullContext: "B2bfiy digital agency.",
+      packages: [],
+      portfolios: [],
+      faqs: [],
+      knowledgeDocs: [],
+      siteContent: {},
     };
   }
 }

@@ -20,7 +20,7 @@ export interface AIService {
 export function getAIConfig(): AIProviderConfig {
   const provider = (process.env.AI_PROVIDER || "gemini").toLowerCase() as "gemini" | "openai" | "custom";
   const apiKey = (process.env.AI_API_KEY || process.env.GEMINI_API_KEY || "").trim();
-  const model = process.env.AI_MODEL || "gemini-3.8-flash";
+  const model = process.env.AI_MODEL || "gemini-3.1-flash-lite";
   const embeddingModel = process.env.EMBEDDING_MODEL || "gemini-embedding-2-preview";
 
   return {
@@ -75,19 +75,26 @@ class GeminiAIService implements AIService {
 
     const userMessage = `${formattedContext}\n\nUSER QUESTION: ${prompt}`;
 
-    // Try valid active Gemini models
+    // Try valid active Gemini models in order of speed and stability
     const candidateModels = Array.from(new Set([
       this.config.model,
-      "gemini-3.8-flash",
       "gemini-3.1-flash-lite",
       "gemini-flash-latest",
+      "gemini-3.8-flash",
     ]));
 
     let lastError: any = null;
 
     for (const modelName of candidateModels) {
       try {
-        const response = await client.models.generateContent({
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          const timer = setTimeout(() => reject(new Error(`Model ${modelName} timed out after 5s`)), 5000);
+          if (typeof timer === "object" && timer && "unref" in timer) {
+            (timer as any).unref();
+          }
+        });
+
+        const responsePromise = client.models.generateContent({
           model: modelName,
           contents: [
             {
@@ -95,13 +102,27 @@ class GeminiAIService implements AIService {
               parts: [{ text: `${combinedSystemInstruction}\n\n${userMessage}` }],
             },
           ],
+          config: {
+            temperature: 0.1,
+            maxOutputTokens: 600,
+          },
         });
+
+        const response = await Promise.race([responsePromise, timeoutPromise]);
 
         const text = response.text?.trim() || "INSUFFICIENT_KNOWLEDGE";
         return text;
       } catch (err: any) {
         lastError = err;
-        console.warn(`Gemini model ${modelName} notice: ${err?.message || err}. Trying candidate fallback...`);
+        const rawMsg = err?.message || String(err);
+        let summaryMsg = rawMsg;
+        try {
+          if (rawMsg.startsWith("{")) {
+            const parsed = JSON.parse(rawMsg);
+            summaryMsg = parsed?.error?.message || rawMsg;
+          }
+        } catch (_) {}
+        console.log(`[AI Candidate Fallback] Model ${modelName} notice: ${summaryMsg.slice(0, 120)}. Trying next candidate...`);
       }
     }
 

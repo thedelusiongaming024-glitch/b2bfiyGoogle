@@ -57,6 +57,12 @@ const SYNONYMS: Record<string, string> = {
   modify: "revision",
 };
 
+const STOP_WORDS = new Set([
+  "what", "is", "are", "your", "the", "a", "an", "and", "or", "to", "in", "for", "of", "with",
+  "do", "does", "did", "can", "how", "i", "we", "you", "they", "it", "my", "our", "me", "us",
+  "about", "tell", "show", "give", "much", "many", "regarding"
+]);
+
 function normalizeToken(raw: string): string {
   const stemmed = stemWord(raw);
   return SYNONYMS[stemmed] || SYNONYMS[raw] || stemmed;
@@ -67,7 +73,7 @@ function tokenize(text: string): Set<string> {
     .toLowerCase()
     .replace(/[^\w\s]/g, " ")
     .split(/\s+/)
-    .filter((w) => w.length > 1)
+    .filter((w) => w.length > 1 && !STOP_WORDS.has(w))
     .map(normalizeToken);
   return new Set(words);
 }
@@ -80,8 +86,11 @@ export function computeStringSimilarity(queryText: string, targetText: string): 
   if (!normQuery || !normTarget) return 0;
   if (normQuery === normTarget) return 1.0;
 
-  // Exact substring containment
-  if (normTarget.includes(normQuery) || normQuery.includes(normTarget)) {
+  // Exact substantial substring containment
+  if (
+    (normTarget.includes(normQuery) && normQuery.length >= 12) ||
+    (normQuery.includes(normTarget) && normTarget.length >= 12)
+  ) {
     const ratio = Math.min(normQuery.length, normTarget.length) / Math.max(normQuery.length, normTarget.length);
     return Math.max(0.85, 0.7 + ratio * 0.3);
   }

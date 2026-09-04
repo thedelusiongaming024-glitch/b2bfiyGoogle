@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   HelpCircle, Bot, Send, User, Sparkles, AlertCircle, CheckCircle2,
   Clock, RefreshCw, MessageSquare, ArrowRight, ChevronDown, LifeBuoy,
-  Mail, Phone, ShieldCheck, UserCheck, X
+  Mail, Phone, ShieldCheck, UserCheck, X, Database
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { SiteContent, FaqItem, ChatMessage, SupportTicket } from "../types";
@@ -661,6 +661,12 @@ export default function FAQ({ setRoute, siteContent }: FAQProps) {
                       {/* Source & Metadata Badge */}
                       {!isUser && (
                         <div className="flex items-center gap-2 text-[10px] text-gray-400 pl-1">
+                          {msg.source === "DATABASE" && (
+                            <span className="inline-flex items-center gap-1 font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-900">
+                              <Database className="w-3 h-3" />
+                              {t("Live Database Record", "লাইভ ডাটাবেস রেকর্ড")}
+                            </span>
+                          )}
                           {msg.source === "FAQ" && (
                             <span className="inline-flex items-center gap-1 font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 px-2 py-0.5 rounded-md border border-blue-200 dark:border-blue-900">
                               <CheckCircle2 className="w-3 h-3" />

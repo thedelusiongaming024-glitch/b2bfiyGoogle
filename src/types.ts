@@ -210,7 +210,7 @@ export interface ChatMessage {
   conversation_id?: string;
   role: "user" | "assistant" | "system";
   content: string;
-  source: "USER" | "AI" | "FAQ" | "RAG" | "HUMAN" | "SYSTEM";
+  source: "USER" | "AI" | "FAQ" | "RAG" | "HUMAN" | "SYSTEM" | "DATABASE";
   created_at: string;
   ticket?: {
     id: string;

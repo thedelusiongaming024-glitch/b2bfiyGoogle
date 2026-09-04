@@ -4,6 +4,7 @@ import { processUserMessage } from "./orchestrator.js";
 import { indexDocument, reindexAllKnowledge, retrieveRelevantChunks } from "./ragEngine.js";
 import { matchFaq } from "./faqMatcher.js";
 import { getAIConfig, getAIService } from "./provider.js";
+import { invalidateDatabaseContextCache } from "./databaseContext.js";
 
 export function registerAiRoutes(app: Express) {
   // Helper for admin auth verification
@@ -471,6 +472,7 @@ export function registerAiRoutes(app: Express) {
         [id, category_id || null, question.trim(), answer.trim(), status, show_in_browse !== false, Number(display_order) || 0, session.email]
       );
 
+      invalidateDatabaseContextCache();
       res.status(201).json({ ok: true, id });
     } catch (err: any) {
       res.status(500).json({ error: err?.message || "Failed to create FAQ." });
@@ -505,6 +507,7 @@ export function registerAiRoutes(app: Express) {
         ]
       );
 
+      invalidateDatabaseContextCache();
       res.status(200).json({ ok: true });
     } catch (err: any) {
       res.status(500).json({ error: err?.message || "Failed to update FAQ." });
@@ -536,6 +539,7 @@ export function registerAiRoutes(app: Express) {
           );
         }
       }
+      invalidateDatabaseContextCache();
       res.status(200).json({ ok: true });
     } catch (err: any) {
       res.status(500).json({ error: err?.message || "Failed to update bulk FAQ selection." });
@@ -547,6 +551,7 @@ export function registerAiRoutes(app: Express) {
     try {
       const { id } = req.params;
       await query("DELETE FROM faqs WHERE id = $1", [id]);
+      invalidateDatabaseContextCache();
       res.status(200).json({ ok: true });
     } catch (err: any) {
       res.status(500).json({ error: err?.message || "Failed to delete FAQ." });
@@ -680,6 +685,7 @@ export function registerAiRoutes(app: Express) {
         }
       }
 
+      invalidateDatabaseContextCache();
       res.status(201).json({ ok: true, id, chunkCount });
     } catch (err: any) {
       res.status(500).json({ error: err?.message || "Failed to create knowledge document." });
@@ -705,7 +711,7 @@ export function registerAiRoutes(app: Express) {
 
       // Re-index document chunks
       const chunkCount = await indexDocument(id);
-
+      invalidateDatabaseContextCache();
       res.status(200).json({ ok: true, chunkCount });
     } catch (err: any) {
       res.status(500).json({ error: err?.message || "Failed to update knowledge document." });
@@ -717,6 +723,7 @@ export function registerAiRoutes(app: Express) {
     try {
       const { id } = req.params;
       await query("DELETE FROM knowledge_documents WHERE id = $1", [id]);
+      invalidateDatabaseContextCache();
       res.status(200).json({ ok: true });
     } catch (err: any) {
       res.status(500).json({ error: err?.message || "Failed to delete knowledge document." });
