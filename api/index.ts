@@ -332,14 +332,28 @@ function runMemoryQuery<T = any>(text: string, params: any[] = []): T[] {
 
   // 7. Site Content
   if (normalized.includes("FROM site_content")) {
-    const data = memoryDb.site_content["main_site_content"] || null;
-    return (data ? [{ data }] : []) as unknown as T[];
+    const data = memoryDb.site_content["main_site_content"] || memoryDb.site_content["default_site_content"] || DEFAULT_SITE_CONTENT;
+    return (data ? [{ id: "main_site_content", data }] : []) as unknown as T[];
   }
 
   if (normalized.includes("INSERT INTO site_content")) {
-    const id = params[0] || "main_site_content";
-    const data = typeof params[1] === "string" ? JSON.parse(params[1]) : params[1];
-    memoryDb.site_content[id] = data;
+    let id = "main_site_content";
+    let rawData: any = null;
+    if (params && params.length === 1) {
+      rawData = params[0];
+      if (normalized.includes("'default_site_content'")) {
+        id = "default_site_content";
+      }
+    } else if (params && params.length >= 2) {
+      id = params[0] || "main_site_content";
+      rawData = params[1];
+    }
+    const data = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
+    if (data) {
+      memoryDb.site_content[id] = data;
+      memoryDb.site_content["main_site_content"] = data;
+      memoryDb.site_content["default_site_content"] = data;
+    }
     return [] as T[];
   }
 
@@ -1784,23 +1798,21 @@ export function createApiApp() {
   // Site Content
   app.all("/api/content", async (req: Request, res: Response) => {
     if (req.method === "GET") {
-      if (!hasDatabaseUrl()) {
-        res.status(200).json({ data: DEFAULT_SITE_CONTENT });
-        return;
-      }
       try {
-        let rows = await query<{ data: any }>(
+        let rows = await query<{ id?: string; data: any }>(
           "SELECT data FROM site_content WHERE id = 'main_site_content' OR id = 'default_site_content' ORDER BY CASE WHEN id = 'main_site_content' THEN 0 ELSE 1 END LIMIT 1"
         );
-        if (rows.length === 0) {
+        if (rows.length === 0 && hasDatabaseUrl()) {
           await bootstrapAgencyDataIfEmpty();
-          rows = await query<{ data: any }>(
+          rows = await query<{ id?: string; data: any }>(
             "SELECT data FROM site_content WHERE id = 'main_site_content' OR id = 'default_site_content' ORDER BY CASE WHEN id = 'main_site_content' THEN 0 ELSE 1 END LIMIT 1"
           );
         }
-        res.status(200).json({ data: rows[0]?.data ?? DEFAULT_SITE_CONTENT });
+        const siteData = rows[0]?.data ?? memoryDb.site_content["main_site_content"] ?? DEFAULT_SITE_CONTENT;
+        res.status(200).json({ data: siteData });
       } catch (err: any) {
-        res.status(200).json({ data: DEFAULT_SITE_CONTENT });
+        const fallback = memoryDb.site_content["main_site_content"] ?? DEFAULT_SITE_CONTENT;
+        res.status(200).json({ data: fallback });
       }
       return;
     }
@@ -1814,6 +1826,11 @@ export function createApiApp() {
       try {
         const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
         const serialized = JSON.stringify(body);
+
+        // Keep memoryDb synchronized immediately
+        memoryDb.site_content["main_site_content"] = body;
+        memoryDb.site_content["default_site_content"] = body;
+
         await query(
           `INSERT INTO site_content (id, data, updated_at) VALUES ('main_site_content', $1::jsonb, NOW())
            ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()`,

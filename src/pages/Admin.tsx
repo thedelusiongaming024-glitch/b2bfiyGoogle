@@ -1977,9 +1977,9 @@ export default function Admin({
 
                 {/* Section A1: Interactive Floating Support Widgets */}
                 <div className="space-y-4 bg-white border border-[#F2E4E2] p-5 rounded-2xl text-left shadow-2xs">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#F2E4E2] pb-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#F2E4E2] pb-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-blue-600">
+                      <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-blue-600 shrink-0">
                         <Bot className="w-4 h-4" />
                       </div>
                       <div>
@@ -1992,16 +1992,40 @@ export default function Admin({
                       </div>
                     </div>
 
-                    {/* Master Switch */}
-                    <label className="inline-flex items-center gap-2 text-xs font-bold text-[#101828] cursor-pointer bg-[#FFF7F5] px-3 py-1.5 rounded-xl border border-[#F2E4E2]">
-                      <input
-                        type="checkbox"
-                        checked={editedContent.showFloatingButtons !== false}
-                        onChange={(e) => setEditedContent({ ...editedContent, showFloatingButtons: e.target.checked })}
-                        className="w-4 h-4 text-[#FF2D2D] rounded focus:ring-[#FF2D2D] cursor-pointer"
-                      />
-                      <span>Master Floating Stack: {editedContent.showFloatingButtons !== false ? "Enabled" : "Disabled"}</span>
-                    </label>
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      {/* Master Switch */}
+                      <label className="inline-flex items-center gap-2 text-xs font-bold text-[#101828] cursor-pointer bg-[#FFF7F5] px-3 py-1.5 rounded-xl border border-[#F2E4E2]">
+                        <input
+                          type="checkbox"
+                          checked={editedContent.showFloatingButtons !== false}
+                          onChange={(e) => setEditedContent({ ...editedContent, showFloatingButtons: e.target.checked })}
+                          className="w-4 h-4 text-[#FF2D2D] rounded focus:ring-[#FF2D2D] cursor-pointer"
+                        />
+                        <span>Master Stack: {editedContent.showFloatingButtons !== false ? "Enabled" : "Disabled"}</span>
+                      </label>
+
+                      {/* Direct Save Floating Widgets Button */}
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          const nextContent = {
+                            ...editedContent,
+                            stats: editingStats
+                          };
+                          try {
+                            await onUpdateSiteContent(nextContent);
+                            triggerSuccess("Floating Support Widgets settings saved to database & frontend!");
+                          } catch (err: any) {
+                            console.error(err);
+                            setErrorMsg("Saved locally, but failed to sync with database.");
+                          }
+                        }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FF2D2D] hover:bg-[#E02626] text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer transition-colors"
+                      >
+                        <Save className="w-3.5 h-3.5" />
+                        <span>Save Floating Widgets</span>
+                      </button>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
@@ -2080,13 +2104,24 @@ export default function Admin({
 
                 {/* Section A2: Primary Contact & Office Information */}
                 <div className="space-y-4 bg-white border border-[#F2E4E2] p-5 rounded-2xl text-left shadow-2xs">
-                  <div className="border-b border-[#F2E4E2] pb-3">
-                    <h3 className="text-xs font-bold text-[#FF2D2D] uppercase tracking-wider font-mono">
-                      Agency Contact & Operations
-                    </h3>
-                    <p className="text-[11px] text-[#475467]">
-                      These details synchronize across website footers, contact dialogs, AI database context, and automated responses.
-                    </p>
+                  <div className="border-b border-[#F2E4E2] pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <h3 className="text-xs font-bold text-[#FF2D2D] uppercase tracking-wider font-mono">
+                        Agency Contact & Operations
+                      </h3>
+                      <p className="text-[11px] text-[#475467]">
+                        These details synchronize across website footers, contact dialogs, AI database context, and automated responses.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleSaveContent}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer transition-colors self-start sm:self-auto"
+                    >
+                      <Save className="w-3.5 h-3.5" />
+                      <span>Save Contact Details</span>
+                    </button>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -2926,55 +2961,7 @@ export default function Admin({
                   </div>
                 </div>
 
-                {/* Section B.5: Floating Contact Buttons (WhatsApp & Call) */}
-                <div className="space-y-4 pt-4 border-t border-[#F2E4E2]">
-                  <h3 className="text-xs font-bold text-[#FF2D2D] uppercase tracking-wider block font-mono">Floating Support Widgets (AI Assistant, WhatsApp & Call)</h3>
-                  <p className="text-[11px] text-[#475467]">Enable sticky AI chatbot, WhatsApp chat, and click-to-call floating buttons to provide instant answers and customer support.</p>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-[#FFF7F5] border border-[#F2E4E2] p-5 rounded-2xl text-left">
-                    <div className="space-y-2 md:col-span-2">
-                      <label className="flex items-center space-x-2.5 cursor-pointer select-none">
-                        <input
-                          type="checkbox"
-                          checked={editedContent.showFloatingButtons !== false}
-                          onChange={(e) => setEditedContent({ ...editedContent, showFloatingButtons: e.target.checked })}
-                          className="h-4 w-4 rounded-sm border-gray-300 text-[#FF2D2D] focus:ring-[#FF2D2D]"
-                        />
-                        <span className="text-xs font-bold text-[#101828]">Enable Floating Contact Buttons on Website</span>
-                      </label>
-                    </div>
 
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-[#101828] uppercase flex items-center gap-1.5">
-                        <MessageCircle className="w-3.5 h-3.5 text-[#25D366]" />
-                        <span>WhatsApp Number</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={editedContent.floatingWhatsApp || ""}
-                        onChange={(e) => setEditedContent({ ...editedContent, floatingWhatsApp: e.target.value })}
-                        placeholder="e.g. +8801712345678"
-                        className="w-full px-3 py-2 border border-[#F2E4E2] rounded-xl text-xs bg-white focus:outline-hidden"
-                      />
-                      <p className="text-[9px] text-[#475467]">Enter your mobile number with country code. Non-digit characters will be filtered automatically for the chat link.</p>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-[#101828] uppercase flex items-center gap-1.5">
-                        <Phone className="w-3.5 h-3.5 text-[#FF2D2D]" />
-                        <span>Call Support Number</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={editedContent.floatingCall || ""}
-                        onChange={(e) => setEditedContent({ ...editedContent, floatingCall: e.target.value })}
-                        placeholder="e.g. +8801712345678"
-                        className="w-full px-3 py-2 border border-[#F2E4E2] rounded-xl text-xs bg-white focus:outline-hidden"
-                      />
-                      <p className="text-[9px] text-[#475467]">Enter the direct phone number customers should dial when tapping the Call button.</p>
-                    </div>
-                  </div>
-                </div>
 
                 {/* Section C: Hero Copy */}
                 <div className="space-y-4 pt-4 border-t border-[#F2E4E2]">
@@ -4049,6 +4036,27 @@ export default function Admin({
                       );
                     })}
                   </div>
+                </div>
+
+                {/* Sticky Bottom Quick Action Bar for Content Save */}
+                <div className="sticky bottom-4 z-20 bg-[#101828] text-white p-4 rounded-2xl shadow-2xl border border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-[#FF2D2D]/20 text-[#FF2D2D] flex items-center justify-center shrink-0">
+                      <Save className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-white block">Save and Publish All Content Changes?</span>
+                      <span className="text-[10px] text-gray-400 block">Synchronizes floating widgets, agency contacts, hero copy, and metadata to live database & frontend.</span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleSaveContent}
+                    className="w-full sm:w-auto px-5 py-2 bg-[#FF2D2D] hover:bg-[#E02626] text-white text-xs font-bold rounded-xl shadow-md flex items-center justify-center gap-2 cursor-pointer transition-colors shrink-0"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>Save All Content Changes</span>
+                  </button>
                 </div>
 
               </div>

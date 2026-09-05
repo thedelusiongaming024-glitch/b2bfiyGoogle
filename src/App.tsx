@@ -977,9 +977,9 @@ export default function App() {
           )}
 
           {/* Call Widget */}
-          {siteContent.showCallFloatingButton !== false && siteContent.floatingCall && (
+          {siteContent.showCallFloatingButton !== false && ((siteContent.floatingCall || siteContent.phone || "").trim().length > 0) && (
             <motion.a
-              href={`tel:${siteContent.floatingCall.replace(/[^0-9+]/g, "")}`}
+              href={`tel:${(siteContent.floatingCall || siteContent.phone || "").replace(/[^0-9+]/g, "")}`}
               initial={{ scale: 0, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               whileHover={{ scale: 1.08 }}
@@ -993,15 +993,15 @@ export default function App() {
               </div>
 
               <span className="absolute right-16 bg-[#101828] text-white text-[11px] font-bold px-3 py-2 rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none shadow-xl transform translate-x-2 group-hover:translate-x-0">
-                Call: {siteContent.floatingCall}
+                Call: {siteContent.floatingCall || siteContent.phone}
               </span>
             </motion.a>
           )}
 
           {/* WhatsApp Widget */}
-          {siteContent.showWhatsAppFloatingButton !== false && siteContent.floatingWhatsApp && (
+          {siteContent.showWhatsAppFloatingButton !== false && ((siteContent.floatingWhatsApp || siteContent.socials?.whatsapp || "").trim().length > 0) && (
             <motion.a
-              href={`https://wa.me/${siteContent.floatingWhatsApp.replace(/[^0-9]/g, "")}`}
+              href={`https://wa.me/${(siteContent.floatingWhatsApp || siteContent.socials?.whatsapp || "").replace(/[^0-9]/g, "")}`}
               target="_blank"
               rel="noopener noreferrer"
               initial={{ scale: 0, opacity: 0, y: 20 }}
