@@ -64,7 +64,7 @@ export default function IntroSplash({ onComplete }: IntroSplashProps) {
       opacity: 1,
       scale: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         damping: 14,
         stiffness: 110,
       },
@@ -78,7 +78,7 @@ export default function IntroSplash({ onComplete }: IntroSplashProps) {
       y: "-100%",
       transition: {
         duration: 0.85,
-        ease: [0.76, 0, 0.24, 1], // Smooth cubic-bezier split curve
+        ease: [0.76, 0, 0.24, 1] as [number, number, number, number], // Smooth cubic-bezier split curve
       },
     },
   };
@@ -89,7 +89,7 @@ export default function IntroSplash({ onComplete }: IntroSplashProps) {
       y: "100%",
       transition: {
         duration: 0.85,
-        ease: [0.76, 0, 0.24, 1],
+        ease: [0.76, 0, 0.24, 1] as [number, number, number, number],
       },
     },
   };

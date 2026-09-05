@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { SiteContent, FaqItem, ChatMessage, SupportTicket } from "../types";
 import { useLanguage } from "../lib/LanguageContext";
 import { getAdminToken, setAdminToken } from "../lib/db";
+import { FormattedChatMessage } from "../components/FormattedChatMessage";
 
 interface FAQProps {
   setRoute: (route: string) => void;
@@ -649,13 +650,17 @@ export default function FAQ({ setRoute, siteContent }: FAQProps) {
                       
                       {/* Bubble */}
                       <div
-                        className={`p-3.5 sm:p-4 rounded-2xl text-xs sm:text-sm leading-relaxed whitespace-pre-wrap ${
+                        className={`p-3.5 sm:p-4 rounded-2xl text-xs sm:text-sm leading-relaxed ${
                           isUser
-                            ? "bg-[#FF2D2D] text-white rounded-tr-xs shadow-sm font-medium"
+                            ? "bg-[#FF2D2D] text-white rounded-tr-xs shadow-sm font-medium whitespace-pre-wrap"
                             : "bg-white dark:bg-gray-800 text-[#101828] dark:text-gray-100 border border-[#F2E4E2] dark:border-gray-700 rounded-tl-xs shadow-sm"
                         }`}
                       >
-                        {msg.content}
+                        <FormattedChatMessage
+                          content={msg.content}
+                          isUser={isUser}
+                          onNavigate={setRoute}
+                        />
                       </div>
 
                       {/* Source & Metadata Badge */}

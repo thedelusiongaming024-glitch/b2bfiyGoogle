@@ -35,6 +35,11 @@ export function matchDatabaseDirectly(
 
   const { packages = [], portfolios = [], faqs = [], siteContent = {}, phone, email, floatingWhatsApp, officeLocation } = context;
 
+  const cleanWhatsApp = (floatingWhatsApp || "+880 1712-345678").replace(/[*_~`]/g, "").trim();
+  const cleanPhone = (phone || "+880 1712-345678").replace(/[*_~`]/g, "").trim();
+  const cleanEmail = (email || "hello@b2bfiy.com").replace(/[*_~`]/g, "").trim();
+  const waLink = `[${cleanWhatsApp}](https://wa.me/${cleanWhatsApp.replace(/[^\d]/g, "")})`;
+
   // -------------------------------------------------------------------------
   // 1. MATCH PUBLISHED DATABASE FAQS FIRST
   // -------------------------------------------------------------------------
@@ -69,7 +74,7 @@ export function matchDatabaseDirectly(
 ${pkg.deliveryTime ? `• **Turnaround:** ${pkg.deliveryTime}\n` : ""}• **Key Deliverables & Inclusions:**
 ${feats}
 
-${pkg.ctaText ? `👉 **Next Step:** You can book this package or request our free audit at [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit).\n` : ""}For inquiries or custom requirements, contact us on WhatsApp at **${floatingWhatsApp || "+880 1712-345678"}** or email **${email || "hello@b2bfiy.com"}**.`;
+${pkg.ctaText ? `👉 **Next Step:** You can book this package or request our free audit at [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit).\n` : ""}For inquiries or custom requirements, contact us on WhatsApp at ${waLink} or email **${cleanEmail}**.`;
   };
 
   // E-Commerce Store
@@ -229,7 +234,7 @@ ${p.deliveryTime ? `• **Turnaround:** ${p.deliveryTime}\n` : ""}${feats}`;
 ${formatPackageList(webPkgs)}
 
 All websites are built with responsive mobile layout, clean architecture, and SEO foundations. 
-To get a tailored quote or book your project, visit [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit) or reach us on WhatsApp at **${floatingWhatsApp || "+880 1712-345678"}**.`,
+To get a tailored quote or book your project, visit [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit) or reach us on WhatsApp at ${waLink}.`,
         source: "DATABASE",
       };
     }
@@ -249,7 +254,7 @@ To get a tailored quote or book your project, visit [b2bfiy.com/free-audit](http
 ${formatPackageList(monPkgs)}
 
 Monthly retainers include continuous priority turnarounds, weekly scheduling, and dedicated senior creator bandwidth.
-Ready to scale? Book a strategy call via [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit) or message **${floatingWhatsApp || "+880 1712-345678"}**.`,
+Ready to scale? Book a strategy call via [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit) or message us on WhatsApp at ${waLink}.`,
         source: "DATABASE",
       };
     }
@@ -269,7 +274,7 @@ Ready to scale? Book a strategy call via [b2bfiy.com/free-audit](https://b2bfiy.
 ${formatPackageList(vidPkgs)}
 
 Every video package includes kinetic subtitles, dynamic sound design, audio cleanup, and 2 rounds of revisions.
-Order directly or get a custom batch quote at [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit) or via WhatsApp: **${floatingWhatsApp || "+880 1712-345678"}**.`,
+Order directly or get a custom batch quote at [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit) or via WhatsApp: ${waLink}.`,
         source: "DATABASE",
       };
     }
@@ -289,7 +294,7 @@ Order directly or get a custom batch quote at [b2bfiy.com/free-audit](https://b2
 ${formatPackageList(grPkgs)}
 
 Includes all source vector files (AI, EPS, SVG, PNG) and dedicated visual guidelines.
-To get started, contact us on WhatsApp at **${floatingWhatsApp || "+880 1712-345678"}** or request an audit at [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit).`,
+To get started, contact us on WhatsApp at ${waLink} or request an audit at [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit).`,
         source: "DATABASE",
       };
     }
@@ -323,7 +328,7 @@ To get started, contact us on WhatsApp at **${floatingWhatsApp || "+880 1712-345
 • **Social Media Creative Pack (15 Posts) *(Popular)*:** ৳12,000 / $115 (5–7 days, carousel slides, banners)
 
 You can book any package or schedule a free audit at [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit).
-WhatsApp: **${floatingWhatsApp || "+880 1712-345678"}** | Email: **${email || "hello@b2bfiy.com"}**`,
+WhatsApp: ${waLink} | Email: **${cleanEmail}**`,
       source: "DATABASE",
     };
   }
@@ -412,9 +417,9 @@ Explore full interactive case studies on our website or request our detailed por
       matched: true,
       answer: `Here is our official **Contact & Office Information** directly from the B2bfiy database:
 
-• **Official WhatsApp:** [${floatingWhatsApp || "+880 1712-345678"}](https://wa.me/${(floatingWhatsApp || "+8801712345678").replace(/[^\d]/g, "")})
-• **Direct Phone:** ${phone || "+880 1712-345678"}
-• **Email:** ${email || "hello@b2bfiy.com"}
+• **Official WhatsApp:** ${waLink}
+• **Direct Phone:** ${cleanPhone}
+• **Email:** ${cleanEmail}
 • **Office Location:** ${officeLocation || "Dhaka, Bangladesh"}
 • **Support Hours:** Sunday to Thursday, 10:00 AM – 7:00 PM BST
 • **Free Audit & Strategy Call:** [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit) (100% free, zero obligation)`,
@@ -434,7 +439,7 @@ Explore full interactive case studies on our website or request our detailed por
 • **Turnaround:** Delivered within 24–48 hours
 • **Booking URL:** [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit)
 
-You can also request your audit directly via WhatsApp at **${floatingWhatsApp || "+880 1712-345678"}**.`,
+You can also request your audit directly via WhatsApp at ${waLink}.`,
       source: "DATABASE",
     };
   }
@@ -456,7 +461,7 @@ You can also request your audit directly via WhatsApp at **${floatingWhatsApp ||
 • **Custom Web Application / SaaS:** 20–30 Business Days
 • **Short-Form Video Edits (Under Monthly Retainers):** 24–48 Hours per video
 
-Need an expedited rush delivery? Contact our team on WhatsApp at **${floatingWhatsApp || "+880 1712-345678"}** to check current studio availability.`,
+Need an expedited rush delivery? Contact our team on WhatsApp at ${waLink} to check current studio availability.`,
       source: "DATABASE",
     };
   }
