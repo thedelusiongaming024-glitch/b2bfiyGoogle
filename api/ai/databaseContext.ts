@@ -68,7 +68,10 @@ export async function getLiveDatabaseContext(forceRefresh = false): Promise<Live
     const phone = siteContent.phone || "+880 1712-345678";
     const email = siteContent.email || "hello@b2bfiy.com";
     const floatingWhatsApp = siteContent.floatingWhatsApp || "+8801712345678";
-    const officeLocation = "Dhaka, Bangladesh (Support hours: Sunday to Thursday, 10:00 AM - 7:00 PM BST)";
+    const officeLocation = siteContent.officeLocation || "Dhaka, Bangladesh";
+    const supportHours = siteContent.supportHours || "Sunday to Thursday, 10:00 AM - 7:00 PM BST";
+    const auditButtonUrl = siteContent.auditButtonUrl || "/free-audit";
+    const auditButtonText = siteContent.auditButtonText || "Free Digital Audit";
 
     const whyChooseUsSummary = Array.isArray(siteContent.whyChooseUs)
       ? siteContent.whyChooseUs.map((w: any) => `• ${w.title}: ${w.description}`).join("\n")
@@ -97,8 +100,9 @@ AGENCY IDENTITY & CONTACT (LIVE DATABASE):
 - Official Phone / Call: ${phone}
 - Official Email: ${email}
 - WhatsApp Contact: ${floatingWhatsApp}
-- Headquarters: ${officeLocation}
-- Free Consultation & Audit: Available at /free-audit with zero commitment or fee.
+- Headquarters / Location: ${officeLocation}
+- Support Operating Hours: ${supportHours}
+- Free Consultation & Audit: ${auditButtonText} available at ${auditButtonUrl} with zero commitment or fee.
 
 CORE SERVICES:
 ${servicesSummary}

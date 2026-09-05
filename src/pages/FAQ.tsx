@@ -660,6 +660,7 @@ export default function FAQ({ setRoute, siteContent }: FAQProps) {
                           content={msg.content}
                           isUser={isUser}
                           onNavigate={setRoute}
+                          siteContent={siteContent}
                         />
                       </div>
 

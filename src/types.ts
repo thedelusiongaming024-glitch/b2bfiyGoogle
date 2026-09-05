@@ -73,10 +73,10 @@ export interface SiteContent {
   phone: string;
   email: string;
   socials: {
-    facebook: string;
-    instagram: string;
-    linkedin: string;
-    whatsapp: string;
+    facebook?: string;
+    instagram?: string;
+    linkedin?: string;
+    whatsapp?: string;
   };
   hero: {
     badge: string;
@@ -124,6 +124,19 @@ export interface SiteContent {
   floatingWhatsApp?: string;
   floatingCall?: string;
   showFloatingButtons?: boolean;
+  showAiFloatingButton?: boolean;
+  showCallFloatingButton?: boolean;
+  showWhatsAppFloatingButton?: boolean;
+  officeLocation?: string;
+  supportHours?: string;
+  auditButtonText?: string;
+  auditButtonUrl?: string;
+  aiChatWhatsAppButtonText?: string;
+  aiChatCtaButtonText?: string;
+  aiChatCtaButtonUrl?: string;
+  showAiChatWhatsAppBtn?: boolean;
+  showAiChatCtaBtn?: boolean;
+  showAiChatCopyBtn?: boolean;
   viewAllGraphicsLink?: string;
   privacyPolicy?: {
     lastUpdated?: string;

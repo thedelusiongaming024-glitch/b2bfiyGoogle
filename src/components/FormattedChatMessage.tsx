@@ -21,11 +21,13 @@ import {
   Layers,
   FileText
 } from "lucide-react";
+import { SiteContent } from "../types";
 
 interface FormattedChatMessageProps {
   content: string;
   isUser: boolean;
   onNavigate?: (route: string) => void;
+  siteContent?: SiteContent;
 }
 
 // Helper to choose an icon based on item title
@@ -64,6 +66,7 @@ export const FormattedChatMessage: React.FC<FormattedChatMessageProps> = ({
   content,
   isUser,
   onNavigate,
+  siteContent,
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -74,13 +77,41 @@ export const FormattedChatMessage: React.FC<FormattedChatMessageProps> = ({
 
   const cleanedContent = cleanMarkdown(content);
 
+  // Dynamic Contact & CTA values from Admin Site Content
+  const adminWhatsAppRaw = siteContent?.floatingWhatsApp || siteContent?.socials?.whatsapp || "+8801712345678";
+  const cleanAdminWaDigits = adminWhatsAppRaw.replace(/[^0-9]/g, "");
+  const defaultWaUrl = adminWhatsAppRaw.startsWith("http") 
+    ? adminWhatsAppRaw 
+    : `https://wa.me/${cleanAdminWaDigits || "8801712345678"}`;
+
+  const whatsAppBtnText = siteContent?.aiChatWhatsAppButtonText || "WhatsApp Chat";
+  const auditBtnText = siteContent?.aiChatCtaButtonText || siteContent?.auditButtonText || "Free Audit";
+  const auditBtnUrl = siteContent?.aiChatCtaButtonUrl || siteContent?.auditButtonUrl || "/free-audit";
+
+  const showWhatsAppBtn = siteContent?.showAiChatWhatsAppBtn !== false;
+  const showCtaBtn = siteContent?.showAiChatCtaBtn !== false;
+  const showCopyBtn = siteContent?.showAiChatCopyBtn !== false;
+
   // Extract quick action links if present in text
   const hasWhatsApp = /wa\.me|\+880\s*1\d|whatsapp/i.test(content);
-  const hasAudit = /free-audit|audit|consultation/i.test(content);
+  const hasAudit = /free-audit|audit|consultation|strategy call|booking/i.test(content);
   const waMatch = content.match(/https:\/\/wa\.me\/(\d+)/i) || content.match(/\+880\s*1[3-9]\d{2}[-\s]?\d{6}/);
   const waUrl = waMatch 
     ? (waMatch[0].startsWith("http") ? waMatch[0] : `https://wa.me/${waMatch[0].replace(/[^\d]/g, "")}`)
-    : "https://wa.me/8801712345678";
+    : defaultWaUrl;
+
+  const handleAuditClick = () => {
+    if (auditBtnUrl.startsWith("http")) {
+      window.open(auditBtnUrl, "_blank", "noopener,noreferrer");
+    } else {
+      const cleanRoute = auditBtnUrl.replace(/^\//, "");
+      if (onNavigate) {
+        onNavigate(cleanRoute);
+      } else {
+        window.location.href = auditBtnUrl;
+      }
+    }
+  };
 
   const handleCopy = () => {
     // Strip markdown formatting for clean clipboard copy
@@ -227,39 +258,33 @@ export const FormattedChatMessage: React.FC<FormattedChatMessageProps> = ({
             },
             a: ({ href, children }) => {
               const isWa = href?.includes("wa.me") || href?.includes("whatsapp");
-              const isAudit = href?.includes("free-audit");
-              const isInternalAudit = href === "/free-audit" || href === "free-audit";
+              const isAudit = href?.includes("free-audit") || href?.includes("audit") || href === auditBtnUrl;
 
               if (isWa) {
+                const targetWaHref = href || defaultWaUrl;
                 return (
                   <a
-                    href={href}
+                    href={targetWaHref}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#25D366]/10 text-[#128C7E] dark:text-[#25D366] font-semibold hover:bg-[#25D366]/20 transition-all text-xs border border-[#25D366]/30 my-0.5"
                   >
                     <MessageCircle className="w-3.5 h-3.5 text-[#25D366]" />
-                    <span>{children}</span>
+                    <span>{children || whatsAppBtnText}</span>
                     <ExternalLink className="w-3 h-3 opacity-60" />
                   </a>
                 );
               }
 
-              if (isAudit || isInternalAudit) {
+              if (isAudit) {
                 return (
                   <button
                     type="button"
-                    onClick={() => {
-                      if (onNavigate) {
-                        onNavigate("free-audit");
-                      } else {
-                        window.location.href = "/free-audit";
-                      }
-                    }}
+                    onClick={handleAuditClick}
                     className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#FF2D2D]/10 text-[#FF2D2D] dark:text-[#ff6b6b] font-semibold hover:bg-[#FF2D2D]/20 transition-all text-xs border border-[#FF2D2D]/30 cursor-pointer my-0.5"
                   >
                     <Sparkles className="w-3.5 h-3.5 text-[#FF2D2D]" />
-                    <span>{children}</span>
+                    <span>{children || auditBtnText}</span>
                     <ArrowRight className="w-3 h-3 opacity-70" />
                   </button>
                 );
@@ -327,47 +352,49 @@ export const FormattedChatMessage: React.FC<FormattedChatMessageProps> = ({
       {/* Action Footer for AI assistant answers: Quick actions & Copy button */}
       <div className="pt-2 mt-2 border-t border-gray-100 dark:border-gray-800 flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1.5">
-          {hasWhatsApp && (
+          {showWhatsAppBtn && (hasWhatsApp || content.toLowerCase().includes("contact") || content.toLowerCase().includes("support") || content.toLowerCase().includes("reach")) && (
             <a
               href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#128C7E] dark:text-[#25D366] border border-[#25D366]/30 transition-all"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#128C7E] dark:text-[#25D366] border border-[#25D366]/30 transition-all shadow-2xs"
             >
               <MessageCircle className="w-3 h-3" />
-              <span>WhatsApp Chat</span>
+              <span>{whatsAppBtnText}</span>
             </a>
           )}
-          {hasAudit && (
+          {showCtaBtn && (hasAudit || content.toLowerCase().includes("package") || content.toLowerCase().includes("deliverable") || content.toLowerCase().includes("timeline") || content.toLowerCase().includes("cost")) && (
             <button
               type="button"
-              onClick={() => onNavigate ? onNavigate("free-audit") : (window.location.href = "/free-audit")}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#FF2D2D]/10 hover:bg-[#FF2D2D]/20 text-[#FF2D2D] dark:text-[#ff6b6b] border border-[#FF2D2D]/30 transition-all cursor-pointer"
+              onClick={handleAuditClick}
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#FF2D2D]/10 hover:bg-[#FF2D2D]/20 text-[#FF2D2D] dark:text-[#ff6b6b] border border-[#FF2D2D]/30 transition-all cursor-pointer shadow-2xs"
             >
               <Sparkles className="w-3 h-3" />
-              <span>Free Audit</span>
+              <span>{auditBtnText}</span>
             </button>
           )}
         </div>
 
-        <button
-          type="button"
-          onClick={handleCopy}
-          className="inline-flex items-center gap-1 text-[11px] text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors px-1.5 py-0.5 rounded cursor-pointer ml-auto"
-          title="Copy response to clipboard"
-        >
-          {copied ? (
-            <>
-              <Check className="w-3 h-3 text-emerald-500" />
-              <span className="text-emerald-500 font-medium">Copied</span>
-            </>
-          ) : (
-            <>
-              <Copy className="w-3 h-3" />
-              <span>Copy</span>
-            </>
-          )}
-        </button>
+        {showCopyBtn && (
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="inline-flex items-center gap-1 text-[11px] text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors px-1.5 py-0.5 rounded cursor-pointer ml-auto"
+            title="Copy response to clipboard"
+          >
+            {copied ? (
+              <>
+                <Check className="w-3 h-3 text-emerald-500" />
+                <span className="text-emerald-500 font-medium">Copied</span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-3 h-3" />
+                <span>Copy</span>
+              </>
+            )}
+          </button>
+        )}
       </div>
     </div>
   );

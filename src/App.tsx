@@ -934,48 +934,50 @@ export default function App() {
       {siteContent.showFloatingButtons !== false && currentRoute !== "admin" && (
         <div className="fixed bottom-6 right-6 z-50 flex flex-col space-y-3.5">
           {/* AI Assistant & FAQ Chatbot Widget */}
-          <motion.button
-            id="floating-ai-faq-button"
-            type="button"
-            onClick={() => {
-              setRoute("faq");
-              window.scrollTo({ top: 0, behavior: "smooth" });
-              setTimeout(() => {
-                const chatInput = document.getElementById("chat-input-textarea");
-                if (chatInput) {
-                  chatInput.focus();
-                }
-              }, 120);
-            }}
-            initial={{ scale: 0, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            className={`flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-tr from-[#1E40AF] via-[#2563EB] to-[#4F46E5] text-white shadow-xl group relative cursor-pointer border border-white/20 transition-all ${
-              currentRoute === "faq" ? "ring-4 ring-blue-400/40 shadow-blue-500/50" : "shadow-indigo-900/30"
-            }`}
-            aria-label="AI Assistant and FAQ"
-          >
-            <div className="relative flex items-center justify-center">
-              <Bot className="w-7 h-7 text-white" />
-              <Sparkles className="w-3.5 h-3.5 text-amber-300 absolute -top-1 -right-1 animate-pulse" />
-            </div>
+          {siteContent.showAiFloatingButton !== false && (
+            <motion.button
+              id="floating-ai-faq-button"
+              type="button"
+              onClick={() => {
+                setRoute("faq");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                setTimeout(() => {
+                  const chatInput = document.getElementById("chat-input-textarea");
+                  if (chatInput) {
+                    chatInput.focus();
+                  }
+                }, 120);
+              }}
+              initial={{ scale: 0, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 260, damping: 20 }}
+              className={`flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-tr from-[#1E40AF] via-[#2563EB] to-[#4F46E5] text-white shadow-xl group relative cursor-pointer border border-white/20 transition-all ${
+                currentRoute === "faq" ? "ring-4 ring-blue-400/40 shadow-blue-500/50" : "shadow-indigo-900/30"
+              }`}
+              aria-label="AI Assistant and FAQ"
+            >
+              <div className="relative flex items-center justify-center">
+                <Bot className="w-7 h-7 text-white" />
+                <Sparkles className="w-3.5 h-3.5 text-amber-300 absolute -top-1 -right-1 animate-pulse" />
+              </div>
 
-            {/* Live AI Online Pulse Dot */}
-            <span className="absolute top-0 right-0 flex h-3.5 w-3.5" title="AI Live 24/7">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-[#101828]"></span>
-            </span>
+              {/* Live AI Online Pulse Dot */}
+              <span className="absolute top-0 right-0 flex h-3.5 w-3.5" title="AI Live 24/7">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-[#101828]"></span>
+              </span>
 
-            <span className="absolute right-16 bg-[#101828] text-white text-[11px] font-bold px-3 py-2 rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none shadow-xl transform translate-x-2 group-hover:translate-x-0 flex items-center gap-1.5 border border-white/10">
-              <Bot className="w-3.5 h-3.5 text-blue-400" />
-              <span>AI Assistant & FAQ</span>
-            </span>
-          </motion.button>
+              <span className="absolute right-16 bg-[#101828] text-white text-[11px] font-bold px-3 py-2 rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none shadow-xl transform translate-x-2 group-hover:translate-x-0 flex items-center gap-1.5 border border-white/10">
+                <Bot className="w-3.5 h-3.5 text-blue-400" />
+                <span>AI Assistant & FAQ</span>
+              </span>
+            </motion.button>
+          )}
 
           {/* Call Widget */}
-          {siteContent.floatingCall && (
+          {siteContent.showCallFloatingButton !== false && siteContent.floatingCall && (
             <motion.a
               href={`tel:${siteContent.floatingCall.replace(/[^0-9+]/g, "")}`}
               initial={{ scale: 0, opacity: 0, y: 20 }}
@@ -997,7 +999,7 @@ export default function App() {
           )}
 
           {/* WhatsApp Widget */}
-          {siteContent.floatingWhatsApp && (
+          {siteContent.showWhatsAppFloatingButton !== false && siteContent.floatingWhatsApp && (
             <motion.a
               href={`https://wa.me/${siteContent.floatingWhatsApp.replace(/[^0-9]/g, "")}`}
               target="_blank"

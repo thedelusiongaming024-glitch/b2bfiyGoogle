@@ -3,7 +3,7 @@ import {
   Users, Briefcase, Settings, Image as ImageIcon, DollarSign,
   Plus, Edit2, Trash2, Check, AlertCircle, Save, Info, Link, FileText, Search, Eye,
   Lock, Unlock, LogOut, Key, Upload, Library, Phone, MessageCircle, Database, Copy, Type, Star,
-  Globe, Tag, Sparkles, RefreshCw, ExternalLink, Bot, HelpCircle
+  Globe, Tag, Sparkles, RefreshCw, ExternalLink, Bot, HelpCircle, MapPin, Clock, Sliders, CheckCircle2
 } from "lucide-react";
 import { Lead, PortfolioProject, ServicePackage, SiteContent, MediaItem } from "../types";
 import { optimizeImageUrl } from "../lib/imageUtils";
@@ -397,6 +397,23 @@ export default function Admin({
     };
   });
   const [editingStats, setEditingStats] = useState<{ id: string; value: string; label: string }[]>([...siteContent.stats]);
+
+  // Sync editedContent when siteContent changes from props or refresh
+  useEffect(() => {
+    if (siteContent) {
+      setEditedContent((prev) => ({
+        ...prev,
+        ...siteContent,
+        socials: {
+          ...(prev?.socials || {}),
+          ...(siteContent.socials || {})
+        }
+      }));
+      if (siteContent.stats) {
+        setEditingStats([...siteContent.stats]);
+      }
+    }
+  }, [siteContent]);
 
   // Media state
   const [pickingFor, setPickingFor] = useState<string | null>(null);
@@ -1958,12 +1975,123 @@ export default function Admin({
                   </button>
                 </div>
 
-                {/* Section A: Contact Details */}
-                <div className="space-y-4">
-                  <h3 className="text-xs font-bold text-[#FF2D2D] uppercase tracking-wider block font-mono">Contact Details & Socials</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1 sm:col-span-2">
-                      <span className="text-[10px] font-bold text-[#101828] uppercase">Website Client / Brand Name</span>
+                {/* Section A1: Interactive Floating Support Widgets */}
+                <div className="space-y-4 bg-white border border-[#F2E4E2] p-5 rounded-2xl text-left shadow-2xs">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#F2E4E2] pb-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-blue-600">
+                        <Bot className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="text-xs font-bold text-[#101828] uppercase tracking-wider font-mono">
+                          Floating Support Widgets (Bottom-Right)
+                        </h3>
+                        <p className="text-[11px] text-[#475467]">
+                          Configure visibility and contact targets for the interactive floating buttons on the public website.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Master Switch */}
+                    <label className="inline-flex items-center gap-2 text-xs font-bold text-[#101828] cursor-pointer bg-[#FFF7F5] px-3 py-1.5 rounded-xl border border-[#F2E4E2]">
+                      <input
+                        type="checkbox"
+                        checked={editedContent.showFloatingButtons !== false}
+                        onChange={(e) => setEditedContent({ ...editedContent, showFloatingButtons: e.target.checked })}
+                        className="w-4 h-4 text-[#FF2D2D] rounded focus:ring-[#FF2D2D] cursor-pointer"
+                      />
+                      <span>Master Floating Stack: {editedContent.showFloatingButtons !== false ? "Enabled" : "Disabled"}</span>
+                    </label>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+                    {/* 1. AI Assistant & FAQ Button */}
+                    <div className="p-4 bg-[#FFF7F5] border border-[#F2E4E2] rounded-xl space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-[#101828] flex items-center gap-1.5">
+                          <Bot className="w-3.5 h-3.5 text-blue-600" />
+                          AI Assistant & FAQ
+                        </span>
+                        <input
+                          type="checkbox"
+                          checked={editedContent.showAiFloatingButton !== false}
+                          onChange={(e) => setEditedContent({ ...editedContent, showAiFloatingButton: e.target.checked })}
+                          className="w-4 h-4 text-blue-600 rounded cursor-pointer"
+                        />
+                      </div>
+                      <p className="text-[10px] text-[#475467]">
+                        Launches the interactive 24/7 AI Knowledge Chat & FAQ Assistant page with automatic keyboard focus.
+                      </p>
+                    </div>
+
+                    {/* 2. Direct Call Widget */}
+                    <div className="p-4 bg-[#FFF7F5] border border-[#F2E4E2] rounded-xl space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-[#101828] flex items-center gap-1.5">
+                          <Phone className="w-3.5 h-3.5 text-[#FF2D2D]" />
+                          Direct Call Widget
+                        </span>
+                        <input
+                          type="checkbox"
+                          checked={editedContent.showCallFloatingButton !== false}
+                          onChange={(e) => setEditedContent({ ...editedContent, showCallFloatingButton: e.target.checked })}
+                          className="w-4 h-4 text-[#FF2D2D] rounded cursor-pointer"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <span className="text-[9px] uppercase font-bold text-[#475467] block">Dial Number:</span>
+                        <input
+                          type="text"
+                          value={editedContent.floatingCall || editedContent.phone || ""}
+                          onChange={(e) => setEditedContent({ ...editedContent, floatingCall: e.target.value })}
+                          placeholder="+880 1712-345678"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#F2E4E2] rounded-lg text-xs"
+                        />
+                      </div>
+                    </div>
+
+                    {/* 3. WhatsApp Widget */}
+                    <div className="p-4 bg-[#FFF7F5] border border-[#F2E4E2] rounded-xl space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-[#101828] flex items-center gap-1.5">
+                          <MessageCircle className="w-3.5 h-3.5 text-[#25D366]" />
+                          WhatsApp Widget
+                        </span>
+                        <input
+                          type="checkbox"
+                          checked={editedContent.showWhatsAppFloatingButton !== false}
+                          onChange={(e) => setEditedContent({ ...editedContent, showWhatsAppFloatingButton: e.target.checked })}
+                          className="w-4 h-4 text-[#25D366] rounded cursor-pointer"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <span className="text-[9px] uppercase font-bold text-[#475467] block">WhatsApp Number:</span>
+                        <input
+                          type="text"
+                          value={editedContent.floatingWhatsApp || editedContent.socials?.whatsapp || ""}
+                          onChange={(e) => setEditedContent({ ...editedContent, floatingWhatsApp: e.target.value })}
+                          placeholder="+8801712345678"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#F2E4E2] rounded-lg text-xs"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section A2: Primary Contact & Office Information */}
+                <div className="space-y-4 bg-white border border-[#F2E4E2] p-5 rounded-2xl text-left shadow-2xs">
+                  <div className="border-b border-[#F2E4E2] pb-3">
+                    <h3 className="text-xs font-bold text-[#FF2D2D] uppercase tracking-wider font-mono">
+                      Agency Contact & Operations
+                    </h3>
+                    <p className="text-[11px] text-[#475467]">
+                      These details synchronize across website footers, contact dialogs, AI database context, and automated responses.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-[#101828] uppercase">Website / Brand Name</span>
                       <input
                         type="text"
                         value={editedContent.brandName || ""}
@@ -1973,7 +2101,10 @@ export default function Admin({
                       />
                     </div>
                     <div className="space-y-1">
-                      <span className="text-[10px] font-bold text-[#101828] uppercase">Phone Number</span>
+                      <span className="text-[10px] font-bold text-[#101828] uppercase flex items-center gap-1">
+                        <Phone className="w-3 h-3 text-[#FF2D2D]" />
+                        Official Phone Number
+                      </span>
                       <input
                         type="text"
                         value={editedContent.phone}
@@ -1982,7 +2113,7 @@ export default function Admin({
                       />
                     </div>
                     <div className="space-y-1">
-                      <span className="text-[10px] font-bold text-[#101828] uppercase">Email Address</span>
+                      <span className="text-[10px] font-bold text-[#101828] uppercase">Official Email Address</span>
                       <input
                         type="email"
                         value={editedContent.email}
@@ -1990,40 +2121,220 @@ export default function Admin({
                         className="w-full px-3 py-2 border border-[#F2E4E2] rounded-xl text-xs"
                       />
                     </div>
+
                     <div className="space-y-1">
-                      <span className="text-[10px] font-bold text-[#101828] uppercase">WhatsApp Chat URL</span>
+                      <span className="text-[10px] font-bold text-[#101828] uppercase flex items-center gap-1">
+                        <MapPin className="w-3 h-3 text-red-500" />
+                        Office / Headquarters Location
+                      </span>
                       <input
                         type="text"
-                        value={editedContent.socials.whatsapp}
-                        onChange={(e) => setEditedContent({
-                          ...editedContent,
-                          socials: { ...editedContent.socials, whatsapp: e.target.value }
-                        })}
+                        value={editedContent.officeLocation || ""}
+                        onChange={(e) => setEditedContent({ ...editedContent, officeLocation: e.target.value })}
+                        placeholder="Dhaka, Bangladesh"
                         className="w-full px-3 py-2 border border-[#F2E4E2] rounded-xl text-xs"
                       />
                     </div>
+
+                    <div className="space-y-1 sm:col-span-2">
+                      <span className="text-[10px] font-bold text-[#101828] uppercase flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-blue-500" />
+                        Support & Operating Hours
+                      </span>
+                      <input
+                        type="text"
+                        value={editedContent.supportHours || ""}
+                        onChange={(e) => setEditedContent({ ...editedContent, supportHours: e.target.value })}
+                        placeholder="Sunday to Thursday, 10:00 AM – 7:00 PM BST"
+                        className="w-full px-3 py-2 border border-[#F2E4E2] rounded-xl text-xs"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-[#101828] uppercase flex items-center gap-1">
+                        <MessageCircle className="w-3 h-3 text-[#25D366]" />
+                        WhatsApp Chat URL / Number
+                      </span>
+                      <input
+                        type="text"
+                        value={editedContent.socials?.whatsapp || ""}
+                        onChange={(e) => setEditedContent({
+                          ...editedContent,
+                          socials: { ...(editedContent.socials || {}), whatsapp: e.target.value }
+                        })}
+                        placeholder="+8801712345678 or https://wa.me/..."
+                        className="w-full px-3 py-2 border border-[#F2E4E2] rounded-xl text-xs"
+                      />
+                    </div>
+
                     <div className="space-y-1">
                       <span className="text-[10px] font-bold text-[#101828] uppercase">Facebook Page Link</span>
                       <input
                         type="text"
-                        value={editedContent.socials.facebook}
+                        value={editedContent.socials?.facebook || ""}
                         onChange={(e) => setEditedContent({
                           ...editedContent,
-                          socials: { ...editedContent.socials, facebook: e.target.value }
+                          socials: { ...(editedContent.socials || {}), facebook: e.target.value }
                         })}
+                        placeholder="https://facebook.com/b2bfiy"
                         className="w-full px-3 py-2 border border-[#F2E4E2] rounded-xl text-xs"
                       />
                     </div>
-                    <div className="space-y-1 sm:col-span-2">
-                      <span className="text-[10px] font-bold text-[#FF2D2D] uppercase block">"View All Graphics Design" Button URL / Link</span>
-                      <span className="text-[9px] text-[#475467] block">Specify the link (e.g. Behance portfolio, Facebook page album) where users go when they click "View All Graphics Design".</span>
+
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-[#101828] uppercase">Instagram Profile Link</span>
+                      <input
+                        type="text"
+                        value={editedContent.socials?.instagram || ""}
+                        onChange={(e) => setEditedContent({
+                          ...editedContent,
+                          socials: { ...(editedContent.socials || {}), instagram: e.target.value }
+                        })}
+                        placeholder="https://instagram.com/b2bfiy"
+                        className="w-full px-3 py-2 border border-[#F2E4E2] rounded-xl text-xs"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section A3: Interactive Buttons & Conversion Links */}
+                <div className="space-y-4 bg-white border border-[#F2E4E2] p-5 rounded-2xl text-left shadow-2xs">
+                  <div className="border-b border-[#F2E4E2] pb-3">
+                    <h3 className="text-xs font-bold text-[#FF2D2D] uppercase tracking-wider font-mono">
+                      CTA Buttons & Interactive Links
+                    </h3>
+                    <p className="text-[11px] text-[#475467]">
+                      Customize the text and destination URLs of main website action buttons and AI chat response widgets.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Main Website Audit CTA Button */}
+                    <div className="p-4 bg-[#FFF7F5] border border-[#F2E4E2] rounded-xl space-y-2.5">
+                      <span className="text-[10px] font-bold text-[#101828] uppercase block flex items-center gap-1.5">
+                        <Sparkles className="w-3 h-3 text-[#FF2D2D]" />
+                        Main Header & Hero Audit Button Text
+                      </span>
+                      <input
+                        type="text"
+                        value={editedContent.auditButtonText || ""}
+                        onChange={(e) => setEditedContent({ ...editedContent, auditButtonText: e.target.value })}
+                        placeholder="Free Audit"
+                        className="w-full px-3 py-2 bg-white border border-[#F2E4E2] rounded-xl text-xs font-bold"
+                      />
+                    </div>
+
+                    <div className="p-4 bg-[#FFF7F5] border border-[#F2E4E2] rounded-xl space-y-2.5">
+                      <span className="text-[10px] font-bold text-[#101828] uppercase block flex items-center gap-1.5">
+                        <ExternalLink className="w-3 h-3 text-blue-500" />
+                        Main Audit Button Destination Link / Route
+                      </span>
+                      <input
+                        type="text"
+                        value={editedContent.auditButtonUrl || ""}
+                        onChange={(e) => setEditedContent({ ...editedContent, auditButtonUrl: e.target.value })}
+                        placeholder="/free-audit"
+                        className="w-full px-3 py-2 bg-white border border-[#F2E4E2] rounded-xl text-xs font-mono"
+                      />
+                    </div>
+
+                    {/* View All Graphics Link */}
+                    <div className="p-4 bg-[#FFF7F5] border border-[#F2E4E2] rounded-xl space-y-2.5 sm:col-span-2">
+                      <span className="text-[10px] font-bold text-[#101828] uppercase block">
+                        "View All Graphics Design" External Link
+                      </span>
                       <input
                         type="url"
                         value={editedContent.viewAllGraphicsLink || ""}
                         onChange={(e) => setEditedContent({ ...editedContent, viewAllGraphicsLink: e.target.value })}
-                        placeholder="https://www.behance.net/your-brand"
-                        className="w-full px-3 py-2 border border-[#F2E4E2] bg-[#FFF7F5] rounded-xl text-xs font-semibold"
+                        placeholder="https://www.behance.net/b2bfiy"
+                        className="w-full px-3 py-2 bg-white border border-[#F2E4E2] rounded-xl text-xs font-semibold"
                       />
+                    </div>
+                  </div>
+
+                  {/* AI Chat Interactive Response Action Buttons */}
+                  <div className="mt-4 pt-4 border-t border-[#F2E4E2]/70 space-y-3">
+                    <h4 className="text-xs font-bold text-[#101828] uppercase font-mono flex items-center gap-1.5">
+                      <Bot className="w-3.5 h-3.5 text-blue-600" />
+                      AI Assistant Chatbot Action Buttons
+                    </h4>
+                    <p className="text-[11px] text-[#475467]">
+                      Buttons rendered below AI messages on the /faq page for instant conversion and sharing.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+                      {/* 1. WhatsApp Button in AI Chat */}
+                      <div className="p-3 bg-[#FFF7F5] border border-[#F2E4E2] rounded-xl space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[11px] font-bold text-[#101828] flex items-center gap-1">
+                            <MessageCircle className="w-3 h-3 text-[#25D366]" />
+                            WhatsApp Button
+                          </span>
+                          <input
+                            type="checkbox"
+                            checked={editedContent.showAiChatWhatsAppBtn !== false}
+                            onChange={(e) => setEditedContent({ ...editedContent, showAiChatWhatsAppBtn: e.target.checked })}
+                            className="w-3.5 h-3.5 text-[#25D366] rounded cursor-pointer"
+                          />
+                        </div>
+                        <input
+                          type="text"
+                          value={editedContent.aiChatWhatsAppButtonText || ""}
+                          onChange={(e) => setEditedContent({ ...editedContent, aiChatWhatsAppButtonText: e.target.value })}
+                          placeholder="WhatsApp Chat"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#F2E4E2] rounded-lg text-xs"
+                        />
+                      </div>
+
+                      {/* 2. Audit/CTA Button in AI Chat */}
+                      <div className="p-3 bg-[#FFF7F5] border border-[#F2E4E2] rounded-xl space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[11px] font-bold text-[#101828] flex items-center gap-1">
+                            <Sparkles className="w-3 h-3 text-[#FF2D2D]" />
+                            Free Audit Button
+                          </span>
+                          <input
+                            type="checkbox"
+                            checked={editedContent.showAiChatCtaBtn !== false}
+                            onChange={(e) => setEditedContent({ ...editedContent, showAiChatCtaBtn: e.target.checked })}
+                            className="w-3.5 h-3.5 text-[#FF2D2D] rounded cursor-pointer"
+                          />
+                        </div>
+                        <input
+                          type="text"
+                          value={editedContent.aiChatCtaButtonText || ""}
+                          onChange={(e) => setEditedContent({ ...editedContent, aiChatCtaButtonText: e.target.value })}
+                          placeholder="Free Audit"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#F2E4E2] rounded-lg text-xs"
+                        />
+                        <input
+                          type="text"
+                          value={editedContent.aiChatCtaButtonUrl || ""}
+                          onChange={(e) => setEditedContent({ ...editedContent, aiChatCtaButtonUrl: e.target.value })}
+                          placeholder="/free-audit"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#F2E4E2] rounded-lg text-[11px] font-mono"
+                        />
+                      </div>
+
+                      {/* 3. Copy Response Button */}
+                      <div className="p-3 bg-[#FFF7F5] border border-[#F2E4E2] rounded-xl space-y-2 flex flex-col justify-between">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[11px] font-bold text-[#101828] flex items-center gap-1">
+                            <Copy className="w-3 h-3 text-gray-500" />
+                            Copy Response Button
+                          </span>
+                          <input
+                            type="checkbox"
+                            checked={editedContent.showAiChatCopyBtn !== false}
+                            onChange={(e) => setEditedContent({ ...editedContent, showAiChatCopyBtn: e.target.checked })}
+                            className="w-3.5 h-3.5 text-gray-700 rounded cursor-pointer"
+                          />
+                        </div>
+                        <p className="text-[10px] text-[#475467]">
+                          Allows visitors to copy formatted markdown responses to their clipboard with one click.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>

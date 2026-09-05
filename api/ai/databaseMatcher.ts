@@ -35,10 +35,14 @@ export function matchDatabaseDirectly(
 
   const { packages = [], portfolios = [], faqs = [], siteContent = {}, phone, email, floatingWhatsApp, officeLocation } = context;
 
-  const cleanWhatsApp = (floatingWhatsApp || "+880 1712-345678").replace(/[*_~`]/g, "").trim();
-  const cleanPhone = (phone || "+880 1712-345678").replace(/[*_~`]/g, "").trim();
-  const cleanEmail = (email || "hello@b2bfiy.com").replace(/[*_~`]/g, "").trim();
+  const cleanWhatsApp = (floatingWhatsApp || siteContent.floatingWhatsApp || "+880 1712-345678").replace(/[*_~`]/g, "").trim();
+  const cleanPhone = (phone || siteContent.phone || "+880 1712-345678").replace(/[*_~`]/g, "").trim();
+  const cleanEmail = (email || siteContent.email || "hello@b2bfiy.com").replace(/[*_~`]/g, "").trim();
   const waLink = `[${cleanWhatsApp}](https://wa.me/${cleanWhatsApp.replace(/[^\d]/g, "")})`;
+  const locText = siteContent.officeLocation || officeLocation || "Dhaka, Bangladesh";
+  const hoursText = siteContent.supportHours || "Sunday to Thursday, 10:00 AM – 7:00 PM BST";
+  const auditUrl = siteContent.auditButtonUrl || "/free-audit";
+  const auditText = siteContent.auditButtonText || "Free Audit & Strategy Call";
 
   // -------------------------------------------------------------------------
   // 1. MATCH PUBLISHED DATABASE FAQS FIRST
@@ -420,9 +424,9 @@ Explore full interactive case studies on our website or request our detailed por
 • **Official WhatsApp:** ${waLink}
 • **Direct Phone:** ${cleanPhone}
 • **Email:** ${cleanEmail}
-• **Office Location:** ${officeLocation || "Dhaka, Bangladesh"}
-• **Support Hours:** Sunday to Thursday, 10:00 AM – 7:00 PM BST
-• **Free Audit & Strategy Call:** [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit) (100% free, zero obligation)`,
+• **Office Location:** ${locText}
+• **Support Hours:** ${hoursText}
+• **${auditText}:** [${auditUrl.replace(/^https?:\/\//, "")}](${auditUrl.startsWith("http") ? auditUrl : `https://b2bfiy.com${auditUrl}`}) (100% free, zero obligation)`,
       source: "DATABASE",
     };
   }
@@ -432,12 +436,12 @@ Explore full interactive case studies on our website or request our detailed por
   ) {
     return {
       matched: true,
-      answer: `You can book a **Free Digital Audit & Strategy Consultation** directly with the B2bfiy senior team:
+      answer: `You can book a **${auditText}** directly with the B2bfiy senior team:
 
 • **Cost:** 100% Free with zero commitment
 • **What's Included:** In-depth review of your current website speed, UX funnel, branding positioning, and social media growth opportunities.
 • **Turnaround:** Delivered within 24–48 hours
-• **Booking URL:** [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit)
+• **Booking URL:** [${auditUrl.replace(/^https?:\/\//, "")}](${auditUrl.startsWith("http") ? auditUrl : `https://b2bfiy.com${auditUrl}`})
 
 You can also request your audit directly via WhatsApp at ${waLink}.`,
       source: "DATABASE",
