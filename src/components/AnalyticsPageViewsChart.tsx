@@ -136,7 +136,7 @@ export default function AnalyticsPageViewsChart() {
         body: JSON.stringify({
           eventName: type,
           eventId: `test_${Date.now()}`,
-          eventSourceUrl: "https://b2bfiy.com/services",
+          eventSourceUrl: typeof window !== "undefined" ? `${window.location.origin}/services` : "https://b2bfiy.me/services",
           clientId: `sim_${Math.random().toString(36).slice(2, 7)}`,
         }),
       });

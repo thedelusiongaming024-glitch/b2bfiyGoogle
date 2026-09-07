@@ -364,7 +364,7 @@ export default function App() {
 
   // Update page title, favicon, SEO meta tags, Google Verification, Schema.org JSON-LD, and Meta Pixel dynamically when route or content changes
   useEffect(() => {
-    const currentOrigin = typeof window !== "undefined" ? window.location.origin : "https://b2bfiy.com";
+    const currentOrigin = typeof window !== "undefined" ? window.location.origin : "https://b2bfiy.me";
     const brand = siteContent.brandName?.trim() || "B2bfiy";
     
     let activeTitle = "";
@@ -656,7 +656,7 @@ export default function App() {
         "image": activeImage,
         "description": siteContent.metaDescription || "Top-rated creative digital growth agency in Dhaka offering high-converting web design, corporate branding, video editing, and social media retainers.",
         "telephone": siteContent.floatingCall || siteContent.phone || "+8801712345678",
-        "email": siteContent.email || "hello@b2bfiy.com",
+        "email": siteContent.email || "hello@b2bfiy.me",
         "priceRange": "$$",
         "currenciesAccepted": "USD, EUR, GBP, CAD, AUD, AED, SGD, BDT",
         "paymentAccepted": "Credit Card, Stripe, PayPal, Wire Transfer, Wise, Bank Transfer, bKash, Nagad",

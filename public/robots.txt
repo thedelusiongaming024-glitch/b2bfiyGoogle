@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin
 
-Sitemap: https://b2bfiy.com/sitemap.xml
+Sitemap: https://b2bfiy.me/sitemap.xml

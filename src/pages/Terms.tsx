@@ -29,8 +29,8 @@ export default function Terms({ siteContent }: TermsProps) {
       "মাসিক সাবস্ক্রিপশন রিটেইনারগুলো পরবর্তী বিলিং চক্রের ৭ দিন আগে লিখিত নোটিশ দিয়ে বাতিল বা পরিবর্তন করা যেতে পারে। একবার কাজ বা ডিজাইন ডেলিভারি করা হয়ে গেলে আমরা আংশিক রিফান্ড প্রদান করি না।"
     ),
     contact: t(
-      "These terms shall be governed by applicable commercial laws. For official legal service notices, please email hello@b2bfiy.com.",
-      "এই শর্তাবলী প্রযোজ্য বাণিজ্যিক আইন দ্বারা পরিচালিত হবে। অফিসিয়াল আইনি নোটিশের জন্য, দয়া করে hello@b2bfiy.com এ ইমেল করুন।"
+      "These terms shall be governed by applicable commercial laws. For official legal service notices, please email hello@b2bfiy.me.",
+      "এই শর্তাবলী প্রযোজ্য বাণিজ্যিক আইন দ্বারা পরিচালিত হবে। অফিসিয়াল আইনি নোটিশের জন্য, দয়া করে hello@b2bfiy.me এ ইমেল করুন।"
     )
   };
 

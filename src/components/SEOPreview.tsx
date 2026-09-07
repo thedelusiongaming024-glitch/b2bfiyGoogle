@@ -17,7 +17,7 @@ export default function SEOPreview({
   brandName = "B2bfiy",
   faviconUrl,
   seoKeywords = "",
-  baseUrl = "https://b2bfiy.com",
+  baseUrl = "https://b2bfiy.me",
   ogImage,
 }: SEOPreviewProps) {
   const [deviceMode, setDeviceMode] = useState<"desktop" | "mobile" | "social">("desktop");

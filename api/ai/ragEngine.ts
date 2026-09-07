@@ -162,7 +162,8 @@ export async function retrieveRelevantChunks(
   const vectorLiteral = `[${queryEmbedding.join(",")}]`;
 
   try {
-    // 1 - (embedding <=> $1::vector) gives cosine similarity
+    // Neon pgvector HNSW/IVFFlat index requires ORDER BY embedding <=> $1::vector ASC
+    const maxDistance = Math.max(0, 1 - config.similarityThreshold);
     const rows = await query<{
       id: string;
       document_id: string;
@@ -174,10 +175,10 @@ export async function retrieveRelevantChunks(
        FROM knowledge_chunks c
        JOIN knowledge_documents d ON c.document_id = d.id
        WHERE d.status = 'published'
-         AND (1 - (c.embedding <=> $1::vector)) >= $2
-       ORDER BY similarity DESC
+         AND (c.embedding <=> $1::vector) <= $2
+       ORDER BY c.embedding <=> $1::vector ASC
        LIMIT $3`,
-      [vectorLiteral, config.similarityThreshold, config.topK]
+      [vectorLiteral, maxDistance, config.topK]
     );
 
     let totalLength = 0;

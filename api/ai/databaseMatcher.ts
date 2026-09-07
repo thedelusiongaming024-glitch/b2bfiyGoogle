@@ -37,7 +37,7 @@ export function matchDatabaseDirectly(
 
   const cleanWhatsApp = (floatingWhatsApp || siteContent.floatingWhatsApp || "+880 1712-345678").replace(/[*_~`]/g, "").trim();
   const cleanPhone = (phone || siteContent.phone || "+880 1712-345678").replace(/[*_~`]/g, "").trim();
-  const cleanEmail = (email || siteContent.email || "hello@b2bfiy.com").replace(/[*_~`]/g, "").trim();
+  const cleanEmail = (email || siteContent.email || "hello@b2bfiy.me").replace(/[*_~`]/g, "").trim();
   const waLink = `[${cleanWhatsApp}](https://wa.me/${cleanWhatsApp.replace(/[^\d]/g, "")})`;
   const locText = siteContent.officeLocation || officeLocation || "Dhaka, Bangladesh";
   const hoursText = siteContent.supportHours || "Sunday to Thursday, 10:00 AM – 7:00 PM BST";
@@ -78,7 +78,7 @@ export function matchDatabaseDirectly(
 ${pkg.deliveryTime ? `• **Turnaround:** ${pkg.deliveryTime}\n` : ""}• **Key Deliverables & Inclusions:**
 ${feats}
 
-${pkg.ctaText ? `👉 **Next Step:** You can book this package or request our free audit at [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit).\n` : ""}For inquiries or custom requirements, contact us on WhatsApp at ${waLink} or email **${cleanEmail}**.`;
+${pkg.ctaText ? `👉 **Next Step:** You can book this package or request our free audit at [b2bfiy.me/free-audit](https://b2bfiy.me/free-audit).\n` : ""}For inquiries or custom requirements, contact us on WhatsApp at ${waLink} or email **${cleanEmail}**.`;
   };
 
   // E-Commerce Store
@@ -238,7 +238,7 @@ ${p.deliveryTime ? `• **Turnaround:** ${p.deliveryTime}\n` : ""}${feats}`;
 ${formatPackageList(webPkgs)}
 
 All websites are built with responsive mobile layout, clean architecture, and SEO foundations. 
-To get a tailored quote or book your project, visit [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit) or reach us on WhatsApp at ${waLink}.`,
+To get a tailored quote or book your project, visit [b2bfiy.me/free-audit](https://b2bfiy.me/free-audit) or reach us on WhatsApp at ${waLink}.`,
         source: "DATABASE",
       };
     }
@@ -258,7 +258,7 @@ To get a tailored quote or book your project, visit [b2bfiy.com/free-audit](http
 ${formatPackageList(monPkgs)}
 
 Monthly retainers include continuous priority turnarounds, weekly scheduling, and dedicated senior creator bandwidth.
-Ready to scale? Book a strategy call via [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit) or message us on WhatsApp at ${waLink}.`,
+Ready to scale? Book a strategy call via [b2bfiy.me/free-audit](https://b2bfiy.me/free-audit) or message us on WhatsApp at ${waLink}.`,
         source: "DATABASE",
       };
     }
@@ -278,7 +278,7 @@ Ready to scale? Book a strategy call via [b2bfiy.com/free-audit](https://b2bfiy.
 ${formatPackageList(vidPkgs)}
 
 Every video package includes kinetic subtitles, dynamic sound design, audio cleanup, and 2 rounds of revisions.
-Order directly or get a custom batch quote at [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit) or via WhatsApp: ${waLink}.`,
+Order directly or get a custom batch quote at [b2bfiy.me/free-audit](https://b2bfiy.me/free-audit) or via WhatsApp: ${waLink}.`,
         source: "DATABASE",
       };
     }
@@ -298,7 +298,7 @@ Order directly or get a custom batch quote at [b2bfiy.com/free-audit](https://b2
 ${formatPackageList(grPkgs)}
 
 Includes all source vector files (AI, EPS, SVG, PNG) and dedicated visual guidelines.
-To get started, contact us on WhatsApp at ${waLink} or request an audit at [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit).`,
+To get started, contact us on WhatsApp at ${waLink} or request an audit at [b2bfiy.me/free-audit](https://b2bfiy.me/free-audit).`,
         source: "DATABASE",
       };
     }
@@ -331,7 +331,7 @@ To get started, contact us on WhatsApp at ${waLink} or request an audit at [b2bf
 • **Essential Branding Kit:** ৳8,000 / $80 (3–5 days, 3 logo concepts, vector files, guidelines)
 • **Social Media Creative Pack (15 Posts) *(Popular)*:** ৳12,000 / $115 (5–7 days, carousel slides, banners)
 
-You can book any package or schedule a free audit at [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit).
+You can book any package or schedule a free audit at [b2bfiy.me/free-audit](https://b2bfiy.me/free-audit).
 WhatsApp: ${waLink} | Email: **${cleanEmail}**`,
       source: "DATABASE",
     };
@@ -406,7 +406,7 @@ WhatsApp: ${waLink} | Email: **${cleanEmail}**`,
 ${portfolioSummary}
 
 We have delivered proven growth across eCommerce, healthcare, tech startups, and retail brands.
-Explore full interactive case studies on our website or request our detailed portfolio deck at [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit).`,
+Explore full interactive case studies on our website or request our detailed portfolio deck at [b2bfiy.me/free-audit](https://b2bfiy.me/free-audit).`,
       source: "DATABASE",
     };
   }
@@ -426,7 +426,7 @@ Explore full interactive case studies on our website or request our detailed por
 • **Email:** ${cleanEmail}
 • **Office Location:** ${locText}
 • **Support Hours:** ${hoursText}
-• **${auditText}:** [${auditUrl.replace(/^https?:\/\//, "")}](${auditUrl.startsWith("http") ? auditUrl : `https://b2bfiy.com${auditUrl}`}) (100% free, zero obligation)`,
+• **${auditText}:** [${auditUrl.replace(/^https?:\/\//, "")}](${auditUrl.startsWith("http") ? auditUrl : `https://b2bfiy.me${auditUrl}`}) (100% free, zero obligation)`,
       source: "DATABASE",
     };
   }
@@ -441,7 +441,7 @@ Explore full interactive case studies on our website or request our detailed por
 • **Cost:** 100% Free with zero commitment
 • **What's Included:** In-depth review of your current website speed, UX funnel, branding positioning, and social media growth opportunities.
 • **Turnaround:** Delivered within 24–48 hours
-• **Booking URL:** [${auditUrl.replace(/^https?:\/\//, "")}](${auditUrl.startsWith("http") ? auditUrl : `https://b2bfiy.com${auditUrl}`})
+• **Booking URL:** [${auditUrl.replace(/^https?:\/\//, "")}](${auditUrl.startsWith("http") ? auditUrl : `https://b2bfiy.me${auditUrl}`})
 
 You can also request your audit directly via WhatsApp at ${waLink}.`,
       source: "DATABASE",
@@ -501,7 +501,7 @@ Need an expedited rush delivery? Contact our team on WhatsApp at ${waLink} to ch
 • **Milestone Guarantee:** We commit to agreed deliverable milestones. If we fail to initiate or meet verified milestone deliverables as stated in your scope, clients may request a refund within 14 days of project commencement.
 • **Approved Work:** Once a development or design milestone is approved and deployed, that portion is non-refundable.
 • **Monthly Retainers:** Subscriptions can be cancelled anytime with a 7-day notice before the start of the next billing cycle.
-• For questions regarding billing, contact **${email || "hello@b2bfiy.com"}**.`,
+• For questions regarding billing, contact **${email || "hello@b2bfiy.me"}**.`,
       source: "DATABASE",
     };
   }
@@ -548,7 +548,7 @@ Need an expedited rush delivery? Contact our team on WhatsApp at ${waLink} to ch
 4. **Monthly Social Media Growth Retainers:**
    • Dedicated monthly content production, weekly post scheduling, Meta ad campaigns, and brand growth strategy.
 
-Get a free audit and tailored quote at [b2bfiy.com/free-audit](https://b2bfiy.com/free-audit).`,
+Get a free audit and tailored quote at [b2bfiy.me/free-audit](https://b2bfiy.me/free-audit).`,
       source: "DATABASE",
     };
   }

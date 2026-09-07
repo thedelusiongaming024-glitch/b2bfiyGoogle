@@ -29,8 +29,8 @@ export default function PrivacyPolicy({ siteContent }: PrivacyPolicyProps) {
       "আমরা অননুমোদিত অ্যাক্সেস, পরিবর্তন বা তথ্য ফাঁস রোধ করতে সার্ভার-সাইড এনক্রিপশন প্রোটোকল এবং ডেটাবেস সুরক্ষা ফায়ারওয়াল প্রয়োগ করি। আমরা কোনো তৃতীয় পক্ষের মার্কেটিং ব্রোকারের কাছে আপনার ব্যবসায়িক তথ্য, ইমেল বা হোয়াটসঅ্যাপ নম্বর বিক্রি বা লিজ দিই না।"
     ),
     contact: t(
-      "If you have any questions or require your lead history removed from our administrative console database, please contact us directly at hello@b2bfiy.com.",
-      "আপনার যদি কোনো প্রশ্ন থাকে বা আমাদের ডাটাবেস থেকে আপনার লিড হিস্ট্রি মুছে ফেলার প্রয়োজন হয়, তবে দয়া করে সরাসরি hello@b2bfiy.com এ আমাদের সাথে যোগাযোগ করুন।"
+      "If you have any questions or require your lead history removed from our administrative console database, please contact us directly at hello@b2bfiy.me.",
+      "আপনার যদি কোনো প্রশ্ন থাকে বা আমাদের ডাটাবেস থেকে আপনার লিড হিস্ট্রি মুছে ফেলার প্রয়োজন হয়, তবে দয়া করে সরাসরি hello@b2bfiy.me এ আমাদের সাথে যোগাযোগ করুন।"
     )
   };
 

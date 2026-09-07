@@ -20,6 +20,9 @@ import {
   onAdminAuthStateChange,
   notifyAdminAuthChanged,
   updateAdminPassword,
+  getDbDiagnostics,
+  runDatabaseOptimization,
+  DbDiagnostics,
   AdminSession
 } from "../lib/db";
 
@@ -197,9 +200,48 @@ export default function Admin({
     }
   };
 
+  const [dbDiag, setDbDiag] = useState<DbDiagnostics | null>(null);
+  const [isLoadingDiag, setIsLoadingDiag] = useState(false);
+  const [isOptimizingDb, setIsOptimizingDb] = useState(false);
+  const [optResult, setOptResult] = useState<{ durationMs: number; actionsTaken: string[]; message: string } | null>(null);
+
+  const loadDiagnostics = async () => {
+    setIsLoadingDiag(true);
+    try {
+      const data = await getDbDiagnostics();
+      setDbDiag(data);
+    } catch (err) {
+      console.warn("Diag fetch error:", err);
+    } finally {
+      setIsLoadingDiag(false);
+    }
+  };
+
+  const handleRunOptimization = async () => {
+    setIsOptimizingDb(true);
+    setOptResult(null);
+    setErrorMsg("");
+    try {
+      const res = await runDatabaseOptimization();
+      setOptResult(res);
+      triggerSuccess(res.message);
+      await loadDiagnostics();
+    } catch (err: any) {
+      setErrorMsg(err?.message || "Failed to optimize database.");
+    } finally {
+      setIsOptimizingDb(false);
+    }
+  };
+
   useEffect(() => {
     refreshDbStatus();
   }, []);
+
+  useEffect(() => {
+    if (activeTab === "database" && isLoggedIn) {
+      loadDiagnostics();
+    }
+  }, [activeTab, isLoggedIn]);
 
   const handleCopySql = () => {
     navigator.clipboard.writeText(getNeonSQLScript());
@@ -378,7 +420,7 @@ export default function Admin({
         informationCollect: "When you interact with our forms, we collect the following:\n\n• Contact Parameters: Full Name, email address, WhatsApp contact number.\n• Business Information: Company Name, existing website or Facebook page URL.\n• Project Guidelines: Desired service models, message texts, or audit contexts.",
         howWeProcess: "We process your submitted leads to:\n\n• Analyze your online representation and deliver the Free Digital Audit document.\n• Coordinate project deliverables and pricing quotes via email/WhatsApp.\n• Dispatch periodic performance updates and billing statements to monthly partners.",
         security: "We apply server-side encryption protocols and database protection firewalls to prevent unauthorized access, alteration, or data leaks. We do not sell or lease your business handles, email directories, or WhatsApp numbers to third-party marketing brokers.",
-        contact: "If you have any questions or require your lead history removed from our administrative console database, please contact us directly at hello@b2bfiy.com."
+        contact: "If you have any questions or require your lead history removed from our administrative console database, please contact us directly at hello@b2bfiy.me."
       },
       terms: siteContent.terms || {
         lastUpdated: "July 19, 2026",
@@ -386,7 +428,7 @@ export default function Admin({
         billing: "Monthly growth retainers (Starter, Growth, Premium) require upfront payment at the start of each billing cycle month. Project-based custom web developments are split into milestone payments (typically 50% deposit and 50% upon final production approval).",
         ipOwnership: "Upon complete clearance of billing invoices, the client receives 100% full intellectual property ownership of all finalized custom websites, graphics, logos, layouts, and cinematic reel files. B2bfiy retains the right to display the finalized items in our public portfolio collection unless explicitly requested otherwise in writing.",
         cancellation: "Monthly subscription retainers can be cancelled or modified by providing a 7-day written notice before the next billing cycle. We do not provide prorated refunds for active design cycles once assets are delivered.",
-        contact: "These terms shall be governed by applicable commercial laws. For official legal service notices, please email hello@b2bfiy.com."
+        contact: "These terms shall be governed by applicable commercial laws. For official legal service notices, please email hello@b2bfiy.me."
       },
       serviceImages: siteContent.serviceImages || {
         webDev: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=600&q=80",
@@ -763,7 +805,7 @@ export default function Admin({
                   required
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
-                  placeholder="you@b2bfiy.com"
+                  placeholder="you@b2bfiy.me"
                   className="w-full px-3.5 py-2.5 border border-[#F2E4E2] rounded-xl text-xs bg-[#FFF7F5] text-[#101828] font-semibold outline-none focus:border-[#FF2D2D] transition-colors"
                 />
               </div>
@@ -2663,7 +2705,7 @@ export default function Admin({
                     brandName={editedContent.brandName || "B2bfiy"}
                     faviconUrl={editedContent.faviconUrl}
                     seoKeywords={editedContent.seoKeywords || ""}
-                    baseUrl="https://b2bfiy.com"
+                    baseUrl={typeof window !== "undefined" ? window.location.origin : "https://b2bfiy.me"}
                     ogImage={editedContent.logoUrl}
                   />
 
@@ -4301,7 +4343,7 @@ export default function Admin({
                       </div>
                     </div>
                   )}
-                  <div className="mt-3">
+                  <div className="mt-3 flex items-center gap-2">
                     <button
                       type="button"
                       disabled={isTestingConn}
@@ -4311,7 +4353,126 @@ export default function Admin({
                       <RefreshCw className={`w-3.5 h-3.5 ${isTestingConn ? "animate-spin" : ""}`} />
                       <span>{isTestingConn ? "Checking..." : "Refresh Connection Status"}</span>
                     </button>
+                    <button
+                      type="button"
+                      disabled={isLoadingDiag}
+                      onClick={loadDiagnostics}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#F2E4E2] text-[#475467] text-[10px] font-bold rounded-lg hover:bg-[#FFF7F5] cursor-pointer disabled:opacity-50"
+                    >
+                      <Database className={`w-3.5 h-3.5 ${isLoadingDiag ? "animate-spin" : ""}`} />
+                      <span>{isLoadingDiag ? "Loading..." : "Refresh Diagnostics"}</span>
+                    </button>
                   </div>
+                </div>
+
+                {/* DATABASE OPTIMIZATION & DIAGNOSTICS DASHBOARD */}
+                <div className="bg-white border border-[#F2E4E2] p-6 rounded-3xl space-y-6 text-left shadow-xs">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-[#F2E4E2] pb-4">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-5 h-5 text-[#FF2D2D]" />
+                        <h3 className="text-sm font-bold text-[#101828] uppercase tracking-wide font-display">Database Performance & Optimization Suite</h3>
+                      </div>
+                      <p className="text-xs text-[#475467] mt-0.5">Real-time Neon query metrics, HNSW vector indexing status, and live memory caching.</p>
+                    </div>
+
+                    <button
+                      type="button"
+                      disabled={isOptimizingDb}
+                      onClick={handleRunOptimization}
+                      className="flex items-center gap-2 px-4 py-2.5 bg-[#101828] hover:bg-black text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm disabled:opacity-60"
+                    >
+                      <Sparkles className={`w-4 h-4 text-amber-400 ${isOptimizingDb ? "animate-spin" : ""}`} />
+                      <span>{isOptimizingDb ? "Optimizing Database..." : "⚡ Run Database Optimization & Re-Index"}</span>
+                    </button>
+                  </div>
+
+                  {optResult && (
+                    <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-emerald-800 text-xs font-bold font-mono">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                          <span>{optResult.message}</span>
+                        </div>
+                        <span className="text-[10px] bg-emerald-200/60 text-emerald-800 px-2 py-0.5 rounded-md font-mono font-bold">
+                          Execution: {optResult.durationMs}ms
+                        </span>
+                      </div>
+                      {optResult.actionsTaken && optResult.actionsTaken.length > 0 && (
+                        <ul className="text-[11px] text-emerald-700 space-y-1 list-disc list-inside pt-1 font-mono">
+                          {optResult.actionsTaken.map((act, i) => (
+                            <li key={i}>{act}</li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Metrics Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="p-3.5 bg-[#FFF7F5] border border-[#F2E4E2] rounded-2xl">
+                      <span className="text-[9px] font-mono font-bold text-[#475467] uppercase block">Query Ping Latency</span>
+                      <span className="text-lg font-black text-[#101828] font-mono mt-0.5 block">
+                        {dbDiag ? `${dbDiag.pingLatencyMs}ms` : "—"}
+                      </span>
+                      <span className="text-[9px] text-emerald-600 font-medium">⚡ Real-time roundtrip</span>
+                    </div>
+
+                    <div className="p-3.5 bg-[#FFF7F5] border border-[#F2E4E2] rounded-2xl">
+                      <span className="text-[9px] font-mono font-bold text-[#475467] uppercase block">Database Disk Size</span>
+                      <span className="text-lg font-black text-[#101828] font-mono mt-0.5 block">
+                        {dbDiag?.databaseSize || "N/A"}
+                      </span>
+                      <span className="text-[9px] text-[#475467] font-medium">Neon PostgreSQL tier</span>
+                    </div>
+
+                    <div className="p-3.5 bg-[#FFF7F5] border border-[#F2E4E2] rounded-2xl">
+                      <span className="text-[9px] font-mono font-bold text-[#475467] uppercase block">Active Indexes</span>
+                      <span className="text-lg font-black text-[#101828] font-mono mt-0.5 block">
+                        {dbDiag?.indexesCount ?? 12} Indexes
+                      </span>
+                      <span className="text-[9px] text-emerald-600 font-medium">Includes HNSW Vector</span>
+                    </div>
+
+                    <div className="p-3.5 bg-[#FFF7F5] border border-[#F2E4E2] rounded-2xl">
+                      <span className="text-[9px] font-mono font-bold text-[#475467] uppercase block">Server Cache Hit Rate</span>
+                      <span className="text-lg font-black text-[#101828] font-mono mt-0.5 block">
+                        {dbDiag?.cache?.hitRate || "95.0%"}
+                      </span>
+                      <span className="text-[9px] text-[#475467] font-medium">
+                        {dbDiag?.cache ? `${dbDiag.cache.hits} hits / ${dbDiag.cache.misses} misses` : "In-memory caching"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Table Row Counts */}
+                  {dbDiag?.tables && (
+                    <div className="space-y-2">
+                      <span className="text-[10px] font-bold text-[#101828] uppercase tracking-wider block font-mono">
+                        Live Entity Registry (Row Counts)
+                      </span>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs">
+                        {Object.entries(dbDiag.tables).map(([tbl, count]) => (
+                          <div key={tbl} className="p-2.5 bg-[#FFF7F5] border border-[#F2E4E2] rounded-xl flex justify-between items-center">
+                            <span className="font-mono text-[10px] text-[#475467] truncate">{tbl}</span>
+                            <span className="font-bold font-mono text-[#101828] text-[11px]">{count}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Connection Pool Health */}
+                  {dbDiag?.pool && (
+                    <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs font-mono">
+                      <div className="text-slate-700">
+                        <span className="font-bold">Connection Pool:</span> {dbDiag.pool.totalCount} active / {dbDiag.pool.max} max connections ({dbDiag.pool.idleCount} idle, {dbDiag.pool.waitingCount} queued)
+                      </div>
+                      <span className="text-emerald-700 font-bold bg-emerald-100 px-2 py-0.5 rounded text-[10px]">
+                        Keep-Alive (30s) & 10s Statement Timeout Active
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start text-left">

@@ -3,7 +3,7 @@ import type { SiteContent, PortfolioProject, ServicePackage, MediaItem } from ".
 export const DEFAULT_SITE_CONTENT: SiteContent = {
   brandName: "B2bfiy",
   phone: "+880 1712-345678",
-  email: "hello@b2bfiy.com",
+  email: "hello@b2bfiy.me",
   floatingWhatsApp: "+8801712345678",
   floatingCall: "+880 1712-345678",
   showFloatingButtons: true,
@@ -145,7 +145,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     security:
       "We apply server-side encryption protocols and database protection firewalls to prevent unauthorized access, alteration, or data leaks. We do not sell or lease your business handles, email directories, or WhatsApp numbers to third-party marketing brokers.",
     contact:
-      "If you have any questions or require your lead history removed from our administrative console database, please contact us directly at hello@b2bfiy.com.",
+      "If you have any questions or require your lead history removed from our administrative console database, please contact us directly at hello@b2bfiy.me.",
   },
   terms: {
     lastUpdated: "July 19, 2026",
@@ -158,7 +158,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     cancellation:
       "Monthly subscription retainers can be cancelled or modified by providing a 7-day written notice before the next billing cycle. We do not provide prorated refunds for active design cycles once assets are delivered.",
     contact:
-      "These terms shall be governed by applicable commercial laws. For official legal service notices, please email hello@b2bfiy.com.",
+      "These terms shall be governed by applicable commercial laws. For official legal service notices, please email hello@b2bfiy.me.",
   },
   serviceImages: {
     webDev: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=600&q=80",

@@ -82,7 +82,7 @@ export default function ProjectDetail({ setRoute, slug, portfolios }: ProjectDet
       "creator": {
         "@type": "Organization",
         "name": "B2bfiy",
-        "url": "https://b2bfiy.com"
+        "url": typeof window !== "undefined" ? window.location.origin : "https://b2bfiy.me"
       },
       "image": project.thumbnail || "",
       "dateCreated": project.projectDate || "2026-01-01",

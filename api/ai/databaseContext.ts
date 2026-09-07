@@ -66,7 +66,7 @@ export async function getLiveDatabaseContext(forceRefresh = false): Promise<Live
     // Format Site Summary
     const brandName = siteContent.brandName || "B2bfiy";
     const phone = siteContent.phone || "+880 1712-345678";
-    const email = siteContent.email || "hello@b2bfiy.com";
+    const email = siteContent.email || "hello@b2bfiy.me";
     const floatingWhatsApp = siteContent.floatingWhatsApp || "+8801712345678";
     const officeLocation = siteContent.officeLocation || "Dhaka, Bangladesh";
     const supportHours = siteContent.supportHours || "Sunday to Thursday, 10:00 AM - 7:00 PM BST";
@@ -93,7 +93,7 @@ Monthly content strategy, custom graphics, video production, Facebook page manag
 
     const summaryText = `
 AGENCY IDENTITY & CONTACT (LIVE DATABASE):
-- Brand Name: ${brandName} (Website: b2bfiy.com)
+- Brand Name: ${brandName} (Website: b2bfiy.me)
 - Tagline/Badge: ${siteContent.hero?.badge || "Your Digital Growth Partner"}
 - Headline: ${siteContent.hero?.title || "Build a Powerful Digital Presence That Helps Your Business Grow."}
 - Description: ${siteContent.hero?.subtitle || siteContent.metaDescription || "Full-service digital agency in Dhaka, Bangladesh."}
@@ -197,7 +197,7 @@ ${knowledgeDocsText}
     return {
       brandName: "B2bfiy",
       phone: "+880 1712-345678",
-      email: "hello@b2bfiy.com",
+      email: "hello@b2bfiy.me",
       floatingWhatsApp: "+8801712345678",
       officeLocation: "Dhaka, Bangladesh",
       summaryText: "B2bfiy digital agency in Dhaka, Bangladesh.",
