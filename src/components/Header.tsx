@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Menu, X, ArrowRight, MessageSquare, Sun, Moon } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Menu, X, ArrowRight, MessageSquare } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { SiteContent } from "../types";
 import { useLanguage } from "../lib/LanguageContext";
@@ -32,6 +32,30 @@ export default function Header({
     { id: "contact", label: t("Contact", "যোগাযোগ") },
   ];
 
+  // Auto-close menu if viewport expands to desktop (>= 1024px)
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Close mobile drawer on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
+
   const handleNavClick = (id: string) => {
     setRoute(id);
     setIsOpen(false);
@@ -43,9 +67,9 @@ export default function Header({
 
   return (
     <header className="sticky top-2 sm:top-4 z-50 w-full px-3 sm:px-6 lg:px-8 pointer-events-none transition-all duration-300">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto relative">
         {/* Floating Capsule Bar */}
-        <div className="bg-white/90 dark:bg-[#0f172a]/90 backdrop-blur-xl border border-gray-200/80 dark:border-gray-800/80 rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)] px-3.5 sm:px-6 py-2 sm:py-2.5 flex items-center justify-between pointer-events-auto transition-all duration-300">
+        <div className="bg-white/90 dark:bg-[#0f172a]/90 backdrop-blur-xl border border-gray-200/80 dark:border-gray-800/80 rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)] px-3.5 sm:px-5 lg:px-6 py-2 sm:py-2.5 flex items-center justify-between pointer-events-auto transition-all duration-300">
           
           {/* Logo with Brand Badge */}
           <button
@@ -80,7 +104,7 @@ export default function Header({
             )}
           </button>
 
-          {/* Desktop Navigation Links - Floating Capsule Menu with Red Active Pill */}
+          {/* Desktop Navigation Links - Visible on lg screens (>= 1024px) */}
           <nav className="hidden lg:flex items-center bg-[#f2f4f7] dark:bg-slate-800/90 p-1.5 rounded-full border border-gray-200/70 dark:border-slate-700/70 shadow-inner">
             {navItems.map((item) => {
               const isActive = currentRoute === item.id;
@@ -89,7 +113,7 @@ export default function Header({
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
                   id={`nav-item-${item.id}`}
-                  className={`relative text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer focus:outline-none py-1.5 px-4 rounded-full select-none ${
+                  className={`relative text-xs xl:text-sm font-bold transition-all duration-200 cursor-pointer focus:outline-none py-1.5 px-3 xl:px-4 rounded-full select-none ${
                     isActive
                       ? "text-white shadow-sm"
                       : "text-[#344054] dark:text-gray-300 hover:text-[#101828] dark:hover:text-white"
@@ -108,14 +132,14 @@ export default function Header({
             })}
           </nav>
 
-          {/* Desktop Right Actions */}
-          <div className="hidden md:flex items-center space-x-2 sm:space-x-2.5">
+          {/* Desktop Right Actions - Visible on lg screens (>= 1024px) */}
+          <div className="hidden lg:flex items-center space-x-2 sm:space-x-2.5 shrink-0">
             {/* Language Switch */}
             <button
               type="button"
               onClick={toggleLanguage}
               className="relative flex items-center p-0.5 bg-[#FF2D2D] rounded-full cursor-pointer shadow-xs select-none transition-all duration-300 border border-[#FF2D2D]"
-              title={language === "en" ? "বাংলায় পরিবর্তন করুন" : "Switch to English"}
+              title={language === "en" ? "বাংলায় পরিবর্তন করুন" : "Switch to English"}
               id="desktop-language-switch"
             >
               <motion.div
@@ -142,12 +166,12 @@ export default function Header({
               </span>
             </button>
 
-            {/* Pill CTA Button (Matching Reference Image) */}
+            {/* Pill CTA Button */}
             <motion.button
               onClick={() => handleNavClick("free-audit")}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="flex items-center space-x-2 px-5 py-2.5 bg-[#101828] hover:bg-black text-white text-xs sm:text-sm font-bold rounded-full shadow-sm hover:shadow-md transition-all cursor-pointer focus:outline-none shrink-0"
+              className="flex items-center space-x-2 px-4 xl:px-5 py-2 xl:py-2.5 bg-[#101828] hover:bg-black text-white text-xs xl:text-sm font-bold rounded-full shadow-sm hover:shadow-md transition-all cursor-pointer focus:outline-none shrink-0"
               id="header-audit-btn"
             >
               <span>{t("BE OUR FAMILY", "শুরু করুন")}</span>
@@ -155,101 +179,114 @@ export default function Header({
             </motion.button>
           </div>
 
-          {/* Mobile Right Controls */}
-          <div className="md:hidden flex items-center space-x-1.5">
-            {setDarkMode && (
-              <button
-                type="button"
-                onClick={() => setDarkMode(!darkMode)}
-                className="p-1.5 bg-gray-100 dark:bg-gray-800 text-[#475467] dark:text-gray-300 rounded-full border border-gray-200/60 dark:border-gray-700"
-                title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-                id="mobile-dark-mode-toggle"
-              >
-                {darkMode ? (
-                  <Sun className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                ) : (
-                  <Moon className="w-3.5 h-3.5 text-slate-700" />
-                )}
-              </button>
-            )}
-
+          {/* Mobile & Tablet Right Controls - Visible on screens < 1024px (lg:hidden) */}
+          <div className="lg:hidden flex items-center space-x-1.5 sm:space-x-2.5">
+            {/* Language Switch */}
             <button
               type="button"
               onClick={toggleLanguage}
-              className="relative flex items-center p-0.5 bg-[#FF2D2D] rounded-full shadow-xs border border-[#FF2D2D]"
+              className="relative flex items-center p-0.5 bg-[#FF2D2D] rounded-full shadow-xs border border-[#FF2D2D] cursor-pointer"
+              title={language === "en" ? "বাংলায় পরিবর্তন করুন" : "Switch to English"}
               id="mobile-language-switch"
             >
-              <span className="text-[9px] font-black text-white px-1.5 py-0.5">
+              <span className="text-[9px] sm:text-[10px] font-black text-white px-1.5 sm:px-2 py-0.5">
                 {language.toUpperCase()}
               </span>
             </button>
 
+            {/* Quick CTA on tablets (>= 640px) */}
+            <button
+              onClick={() => handleNavClick("free-audit")}
+              className="hidden sm:flex items-center space-x-1.5 px-3.5 py-1.5 bg-[#101828] hover:bg-black dark:bg-[#FF2D2D] text-white text-xs font-bold rounded-full shadow-xs transition-all cursor-pointer"
+              id="tablet-audit-btn"
+            >
+              <span>{t("BE OUR FAMILY", "শুরু করুন")}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+
+            {/* Hamburger / Close Menu Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-1.5 text-[#101828] dark:text-gray-200 hover:text-[#FF2D2D] rounded-full focus:outline-none bg-gray-100 dark:bg-gray-800 border border-gray-200/60 dark:border-gray-700"
+              className="p-2 text-[#101828] dark:text-gray-200 hover:text-[#FF2D2D] rounded-full focus:outline-none bg-gray-100 dark:bg-gray-800 border border-gray-200/60 dark:border-gray-700 cursor-pointer transition-colors"
               id="header-mobile-toggle"
               aria-label="Toggle menu"
+              aria-expanded={isOpen}
             >
-              {isOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              {isOpen ? <X className="w-4 h-4 sm:w-5 sm:h-5" /> : <Menu className="w-4 h-4 sm:w-5 sm:h-5" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Floating Drawer */}
+        {/* Mobile & Tablet Floating Drawer (Visible on < 1024px when open) */}
         <AnimatePresence>
           {isOpen && (
-            <motion.div 
-              initial={{ opacity: 0, y: -10, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.98 }}
-              transition={{ duration: 0.2 }}
-              className="md:hidden mt-2 bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-xl border border-gray-200/80 dark:border-gray-800/80 rounded-3xl p-4 shadow-2xl space-y-3 pointer-events-auto transition-colors duration-300"
-            >
-              <div className="flex flex-col space-y-1.5">
-                {navItems.map((item) => {
-                  const isActive = currentRoute === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => handleNavClick(item.id)}
-                      id={`nav-mobile-${item.id}`}
-                      className={`text-left px-4 py-2 rounded-xl font-bold transition-all text-sm ${
-                        isActive
-                          ? "bg-[#FFE8E5] dark:bg-[#FF2D2D]/15 text-[#FF2D2D] dark:text-[#FF5757]"
-                          : "text-[#475467] dark:text-gray-300 hover:bg-[#FFF7F5] dark:hover:bg-gray-800 hover:text-[#FF2D2D]"
-                      }`}
+            <>
+              {/* Tap-outside backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                onClick={() => setIsOpen(false)}
+                className="fixed inset-0 bg-black/20 dark:bg-black/50 backdrop-blur-xs z-[-1] pointer-events-auto lg:hidden"
+              />
+
+              <motion.div 
+                initial={{ opacity: 0, y: -10, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -10, scale: 0.98 }}
+                transition={{ duration: 0.2 }}
+                className="lg:hidden mt-2 bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-xl border border-gray-200/80 dark:border-gray-800/80 rounded-3xl p-4 sm:p-5 shadow-2xl space-y-3 pointer-events-auto transition-colors duration-300 max-h-[calc(100vh-6rem)] overflow-y-auto"
+              >
+                {/* Navigation Links Grid (2 columns on tablet, 1 column on phone) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
+                  {navItems.map((item) => {
+                    const isActive = currentRoute === item.id;
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => handleNavClick(item.id)}
+                        id={`nav-mobile-${item.id}`}
+                        className={`flex items-center justify-between px-4 py-2.5 rounded-2xl font-bold transition-all text-sm ${
+                          isActive
+                            ? "bg-[#FFE8E5] dark:bg-[#FF2D2D]/15 text-[#FF2D2D] dark:text-[#FF5757]"
+                            : "text-[#475467] dark:text-gray-300 hover:bg-[#FFF7F5] dark:hover:bg-gray-800 hover:text-[#FF2D2D]"
+                        }`}
+                      >
+                        <span>{item.label}</span>
+                        {isActive && <div className="w-2 h-2 rounded-full bg-[#FF2D2D]" />}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <hr className="border-gray-200/80 dark:border-gray-800" />
+
+                {/* Bottom Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-2 pt-1">
+                  {siteContent.socials?.whatsapp && (
+                    <a
+                      href={siteContent.socials.whatsapp}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 flex items-center justify-center space-x-2 py-2.5 border border-gray-200 dark:border-gray-700 rounded-full text-xs font-bold text-[#475467] dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                      id="header-mobile-whatsapp"
                     >
-                      {item.label}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <hr className="border-gray-200/80 dark:border-gray-800" />
-
-              <div className="flex flex-col space-y-2 pt-1">
-                {siteContent.socials?.whatsapp && (
-                  <a
-                    href={siteContent.socials.whatsapp}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center space-x-2 py-2.5 border border-gray-200 dark:border-gray-700 rounded-full text-xs font-bold text-[#475467] dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50"
-                    id="header-mobile-whatsapp"
+                      <MessageSquare className="w-3.5 h-3.5 text-emerald-500" />
+                      <span>{t("WhatsApp Chat", "হোয়াটসঅ্যাপ চ্যাট")}</span>
+                    </a>
+                  )}
+                  <button
+                    onClick={() => handleNavClick("free-audit")}
+                    className="flex-1 flex items-center justify-center space-x-2 py-2.5 bg-[#101828] dark:bg-[#FF2D2D] text-white rounded-full text-xs font-bold shadow-md hover:bg-black dark:hover:bg-[#e02424] transition-colors cursor-pointer"
+                    id="header-mobile-audit"
                   >
-                    <MessageSquare className="w-3.5 h-3.5 text-emerald-500" />
-                    <span>{t("WhatsApp Chat", "হোয়াটসঅ্যাপ চ্যাট")}</span>
-                  </a>
-                )}
-                <button
-                  onClick={() => handleNavClick("free-audit")}
-                  className="flex items-center justify-center space-x-2 py-2.5 bg-[#101828] dark:bg-[#FF2D2D] text-white rounded-full text-xs font-bold shadow-md"
-                  id="header-mobile-audit"
-                >
-                  <span>{t("Get Started", "শুরু করুন")}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </motion.div>
+                    <span>{t("Get Started", "শুরু করুন")}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
       </div>
