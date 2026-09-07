@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://b2bfiy.com/</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://b2bfiy.com/services</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://b2bfiy.com/portfolio</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://b2bfiy.com/packages</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://b2bfiy.com/about</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://b2bfiy.com/free-audit</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://b2bfiy.com/contact</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://b2bfiy.com/faq</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://b2bfiy.com/privacy-policy</loc>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://b2bfiy.com/terms</loc>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://b2bfiy.com/portfolio/luxe-fashion-ecommerce-store</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Luxe Fashion - High-Converting E-Commerce Store</image:title>
+      <image:caption>Custom responsive e-commerce web platform engineered for instant checkout and high mobile conversion rates.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://b2bfiy.com/portfolio/care-dental-clinic-portal</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Care Dental Clinic - Patient Appointment Booking Portal</image:title>
+      <image:caption>Modern medical practice portal with direct WhatsApp consultation integration and automated appointment scheduling.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://b2bfiy.com/portfolio/aura-skincare-brand-identity</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Aura Skincare - Complete Brand Identity &amp; Packaging Design</image:title>
+      <image:caption>Minimalist luxury brand identity, cosmetic packaging labels, and unified digital social media creative kit.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://b2bfiy.com/portfolio/viral-tiktok-reels-editing-series</loc>
+    <lastmod>2026-09-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Viral TikTok &amp; Reels Video Editing - 5M+ Organic Views</image:title>
+      <image:caption>High-retention short-form video editing with animated subtitles, dynamic zooms, sound design, and hook engineering.</image:caption>
+    </image:image>
+  </url>
+</urlset>

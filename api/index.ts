@@ -1792,8 +1792,8 @@ export function createApiApp() {
     res.status(200).json({ status: "ok", dbConfigured: true, dbConnected });
   });
 
-  // Sitemap & Robots
-  app.get(["/sitemap.xml", "/api/sitemap"], async (req: Request, res: Response) => {
+  // Sitemap & Robots & Verification
+  app.all(["/sitemap.xml", "/sitemap", "/sitemap_index.xml", "/api/sitemap"], async (req: Request, res: Response) => {
     try {
       const protocol = req.headers["x-forwarded-proto"] || req.protocol || "https";
       const host = req.headers["x-forwarded-host"] || req.get("host") || "b2bfiy.com";
@@ -1802,6 +1802,11 @@ export function createApiApp() {
 
       res.setHeader("Content-Type", "application/xml; charset=utf-8");
       res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=3600");
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      if (req.method === "HEAD") {
+        res.status(200).end();
+        return;
+      }
       res.status(200).send(sitemap);
     } catch (error: any) {
       console.error("Sitemap error:", error);
@@ -1809,18 +1814,24 @@ export function createApiApp() {
     }
   });
 
-  app.get("/robots.txt", (req: Request, res: Response) => {
+  app.all("/robots.txt", (req: Request, res: Response) => {
     const protocol = req.headers["x-forwarded-proto"] || req.protocol || "https";
     const host = req.headers["x-forwarded-host"] || req.get("host") || "b2bfiy.com";
     const robotsTxt = `User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ${protocol}://${host}/sitemap.xml\n`;
     res.setHeader("Content-Type", "text/plain; charset=utf-8");
     res.setHeader("Cache-Control", "public, max-age=86400");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    if (req.method === "HEAD") {
+      res.status(200).end();
+      return;
+    }
     res.status(200).send(robotsTxt);
   });
 
-  app.get("/google553b301bea0c3634.html", (_req: Request, res: Response) => {
+  app.get(["/google553b301bea0c3634.html", "/google:id.html"], (req: Request, res: Response) => {
+    const verificationFile = req.path.replace(/^\//, "");
     res.setHeader("Content-Type", "text/html; charset=utf-8");
-    res.status(200).send("google-site-verification: google553b301bea0c3634.html");
+    res.status(200).send(`google-site-verification: ${verificationFile}`);
   });
 
   // Site Content
