@@ -1450,13 +1450,6 @@ export async function get30DayAnalytics(): Promise<AnalyticsSummary> {
 // ==========================================
 // 4. SITEMAP GENERATOR
 // ==========================================
-const DEFAULT_PORTFOLIO_SLUGS = [
-  { slug: "sample-ecommerce-storefront", title: "Sample Project: E-Commerce Storefront", projectDate: "2026-04-12", featured: true },
-  { slug: "sample-brand-identity", title: "Sample Project: Brand Visual Identity", projectDate: "2026-05-18", featured: true },
-  { slug: "sample-social-video-reels", title: "Sample Project: Social Video Reels", projectDate: "2026-06-05", featured: true },
-  { slug: "sample-corporate-documentary", title: "Sample Project: Corporate Documentary", projectDate: "2026-07-02", featured: true },
-];
-
 function escapeXml(unsafe: string): string {
   if (!unsafe) return "";
   return unsafe.replace(/[<>&'"]/g, (c) => {
@@ -1488,26 +1481,44 @@ export async function generateSitemapXml(hostUrl: string): Promise<string> {
     { path: "/terms", priority: "0.3", changefreq: "yearly", lastmod: "2026-01-01" },
   ];
 
-  let allPortfolios: any[] = [...DEFAULT_PORTFOLIO_SLUGS];
+  const slugMap = new Map<string, any>();
 
+  // 1. Seed with default portfolio items
+  DEFAULT_PORTFOLIOS.forEach((p: any) => {
+    if (p && p.published !== false) {
+      const key = p.slug || p.id;
+      if (key) slugMap.set(key, p);
+    }
+  });
+
+  // 2. Merge memoryDb items
+  if (memoryDb.portfolios && Array.isArray(memoryDb.portfolios)) {
+    memoryDb.portfolios.forEach((item: any) => {
+      const p = item.data || item;
+      if (p && p.published !== false) {
+        const key = p.slug || p.id || item.id;
+        if (key) slugMap.set(key, p);
+      }
+    });
+  }
+
+  // 3. Merge database items if available
   if (hasDatabaseUrl()) {
     try {
       const rows = await query<{ id: string; data: any }>("SELECT id, data FROM portfolios");
-      const dbItems = rows
-        .map((row) => ({ ...row.data, id: row.id }))
-        .filter((p: any) => p.published !== false);
-
-      const slugMap = new Map();
-      [...allPortfolios, ...dbItems].forEach((p: any) => {
-        if (p.slug && p.published !== false) {
-          slugMap.set(p.slug, p);
+      rows.forEach((row) => {
+        const p = row.data ? { ...row.data, id: row.id } : null;
+        if (p && p.published !== false) {
+          const key = p.slug || p.id || row.id;
+          if (key) slugMap.set(key, p);
         }
       });
-      allPortfolios = Array.from(slugMap.values());
     } catch (e) {
       console.warn("Could not fetch portfolios from DB for sitemap:", e);
     }
   }
+
+  const allPortfolios = Array.from(slugMap.values());
 
   let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -1526,8 +1537,13 @@ export async function generateSitemapXml(hostUrl: string): Promise<string> {
 
   for (const project of allPortfolios) {
     if (project.published === false) continue;
-    const projectUrl = `${normalizedBaseUrl}/portfolio/${project.slug || project.id}`;
-    const lastmodDate = project.projectDate || today;
+    const projectSlug = project.slug || project.id;
+    if (!projectSlug) continue;
+
+    const projectUrl = `${normalizedBaseUrl}/portfolio/${projectSlug}`;
+    const lastmodDate = project.projectDate && /^\d{4}-\d{2}-\d{2}$/.test(project.projectDate)
+      ? project.projectDate
+      : today;
     const priority = project.featured ? "0.9" : "0.8";
 
     xml += `  <url>
@@ -1543,6 +1559,18 @@ export async function generateSitemapXml(hostUrl: string): Promise<string> {
       <image:title>${escapeXml(project.title || "Project Artwork")}</image:title>
       <image:caption>${escapeXml(project.shortDescription || project.title || "")}</image:caption>
     </image:image>`;
+    }
+
+    if (Array.isArray(project.gallery)) {
+      for (const imgUrl of project.gallery) {
+        if (imgUrl && imgUrl !== project.thumbnail) {
+          xml += `
+    <image:image>
+      <image:loc>${escapeXml(imgUrl)}</image:loc>
+      <image:title>${escapeXml(project.title || "Project Gallery Visual")}</image:title>
+    </image:image>`;
+        }
+      }
     }
 
     xml += `

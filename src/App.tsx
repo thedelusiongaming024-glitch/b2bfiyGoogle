@@ -362,13 +362,101 @@ export default function App() {
     };
   }, []);
 
-  // Update page title, favicon, SEO meta tags, Google Verification, Schema.org JSON-LD, and Meta Pixel dynamically when siteContent changes
+  // Update page title, favicon, SEO meta tags, Google Verification, Schema.org JSON-LD, and Meta Pixel dynamically when route or content changes
   useEffect(() => {
+    const currentOrigin = typeof window !== "undefined" ? window.location.origin : "https://b2bfiy.com";
+    const brand = siteContent.brandName?.trim() || "B2bfiy";
+    
+    let activeTitle = "";
+    let activeDesc = "";
+    let activeKeywords = siteContent.seoKeywords?.trim() || "best web design company in Bangladesh, digital marketing agency Dhaka, creative agency Bangladesh, professional video editing Dhaka, corporate branding and logo design Bangladesh, social media marketing agency Dhaka, UI UX design Bangladesh, short-form video editing Reels TikTok, high converting landing page development, e-commerce website development Dhaka, B2B growth retainers Bangladesh";
+    let activeImage = siteContent.hero?.imageUrl || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&h=630&q=80";
+    let activePath = "/";
+    let breadcrumbItems: Array<{ name: string; url: string }> = [{ name: "Home", url: currentOrigin }];
+
+    if (currentRoute === "services") {
+      activeTitle = `Our Services & Creative Solutions | ${brand} - Digital Agency Dhaka`;
+      activeDesc = `Explore ${brand}'s premium services: custom high-converting web development, UI/UX design, corporate brand identity, cinematic video editing & reels, and dedicated monthly growth retainers in Bangladesh.`;
+      activePath = "/services";
+      breadcrumbItems.push({ name: "Services", url: `${currentOrigin}/services` });
+    } else if (currentRoute === "portfolio") {
+      activeTitle = `Client Portfolio & Case Studies | ${brand} - Digital Agency Dhaka`;
+      activeDesc = `Browse recent client success stories, e-commerce storefronts, corporate brand identities, viral reels, and marketing funnels engineered by ${brand} in Dhaka.`;
+      activePath = "/portfolio";
+      breadcrumbItems.push({ name: "Portfolio", url: `${currentOrigin}/portfolio` });
+    } else if (currentRoute === "portfolio-detail") {
+      const activeProject = portfolios.find(p => p.slug === selectedProjectSlug || p.id === selectedProjectSlug);
+      if (activeProject) {
+        activeTitle = activeProject.seoTitle || `${activeProject.title} | Case Study - ${brand} Dhaka`;
+        activeDesc = activeProject.seoDescription || activeProject.shortDescription || `Discover how ${brand} engineered measurable business growth for ${activeProject.clientName || activeProject.title}.`;
+        if (activeProject.thumbnail) activeImage = activeProject.thumbnail;
+      } else {
+        activeTitle = `Case Study & Client Work | ${brand} - Digital Agency Dhaka`;
+        activeDesc = `Explore detailed case studies and measurable digital outcomes from ${brand}.`;
+      }
+      activePath = `/portfolio/${selectedProjectSlug}`;
+      breadcrumbItems.push({ name: "Portfolio", url: `${currentOrigin}/portfolio` });
+      if (activeProject) {
+        breadcrumbItems.push({ name: activeProject.title, url: `${currentOrigin}/portfolio/${selectedProjectSlug}` });
+      }
+    } else if (currentRoute === "packages") {
+      activeTitle = `Pricing & Monthly Retainers | ${brand} - Transparent Agency Packages`;
+      activeDesc = `Explore transparent pricing for custom business websites, graphic design subscriptions, viral video reels retainers, and full-service digital agency growth packages in Bangladesh.`;
+      activePath = "/packages";
+      breadcrumbItems.push({ name: "Pricing & Retainers", url: `${currentOrigin}/packages` });
+    } else if (currentRoute === "about") {
+      activeTitle = `About ${brand} | Elite Digital Growth & Creative Team in Dhaka`;
+      activeDesc = `Meet the multidisciplinary team of engineers, brand designers, and video strategists powering ${brand}. Based in Dhaka, scaling businesses globally.`;
+      activePath = "/about";
+      breadcrumbItems.push({ name: "About Us", url: `${currentOrigin}/about` });
+    } else if (currentRoute === "faq") {
+      activeTitle = `Frequently Asked Questions (FAQ) | ${brand} - Process, Pricing & Turnaround`;
+      activeDesc = `Get instant answers regarding our web design delivery times, revision policies, monthly retainer scopes, security protocols, and client onboarding process.`;
+      activePath = "/faq";
+      breadcrumbItems.push({ name: "FAQ", url: `${currentOrigin}/faq` });
+    } else if (currentRoute === "free-audit") {
+      activeTitle = `Claim Free 15-Point Digital Audit | ${brand} - Growth & Website Review`;
+      activeDesc = `Request a free, high-impact review of your website speed, conversion leaks, branding, and social media reach by ${brand}'s senior digital growth strategists in Dhaka.`;
+      activePath = "/free-audit";
+      breadcrumbItems.push({ name: "Free Audit", url: `${currentOrigin}/free-audit` });
+    } else if (currentRoute === "contact") {
+      activeTitle = `Contact ${brand} | Hire Our Creative Agency in Dhaka, Bangladesh`;
+      activeDesc = `Connect with ${brand} to discuss your next web design, branding, or video editing project. Direct WhatsApp, phone consultation, and office support in Dhaka.`;
+      activePath = "/contact";
+      breadcrumbItems.push({ name: "Contact", url: `${currentOrigin}/contact` });
+    } else if (currentRoute === "privacy-policy") {
+      activeTitle = `Privacy Policy | ${brand} Digital Agency`;
+      activeDesc = `Read ${brand}'s privacy policy outlining data collection, security safeguards, and cookie handling for our website visitors and clients.`;
+      activePath = "/privacy-policy";
+      breadcrumbItems.push({ name: "Privacy Policy", url: `${currentOrigin}/privacy-policy` });
+    } else if (currentRoute === "terms") {
+      activeTitle = `Terms & Conditions of Service | ${brand}`;
+      activeDesc = `Review the terms and conditions governing project deliverables, service milestones, intellectual property ownership, and monthly retainers with ${brand}.`;
+      activePath = "/terms";
+      breadcrumbItems.push({ name: "Terms", url: `${currentOrigin}/terms` });
+    } else if (currentRoute === "admin") {
+      activeTitle = `Admin Management Console | ${brand} Control`;
+      activeDesc = `Secure administrative dashboard for ${brand}.`;
+      activePath = "/admin";
+    } else {
+      // Default / Home
+      activeTitle = siteContent.metaTitle?.trim() || `${brand} | Best Web Design & Creative Digital Agency in Bangladesh - Dhaka`;
+      activeDesc = siteContent.metaDescription?.trim() || `${brand} is Dhaka's premier creative and digital growth agency. We build high-converting websites, corporate brand identities, viral video reels, and monthly marketing retainers to scale your business.`;
+      activePath = "/";
+    }
+
     // 1. Dynamic Title
-    const activeTitle = siteContent.metaTitle?.trim() || (siteContent.brandName ? `${siteContent.brandName} - Complete Creative Agency` : "B2bfiy | Premier Digital Agency in Dhaka - Web Design, Branding & Video");
     document.title = activeTitle;
 
-    // OpenGraph / Twitter Title
+    let metaTitleEl = document.querySelector("meta[name='title']") as HTMLMetaElement | null;
+    if (!metaTitleEl) {
+      metaTitleEl = document.createElement("meta");
+      metaTitleEl.name = "title";
+      document.getElementsByTagName("head")[0].appendChild(metaTitleEl);
+    }
+    metaTitleEl.content = activeTitle;
+
+    // OpenGraph Title & Twitter Title
     let ogTitle = document.querySelector("meta[property='og:title']") as HTMLMetaElement | null;
     if (!ogTitle) {
       ogTitle = document.createElement("meta");
@@ -385,6 +473,41 @@ export default function App() {
     }
     twitterTitle.content = activeTitle;
 
+    // OpenGraph / Twitter URLs & Images
+    const fullCanonicalUrl = activePath === "/" ? `${currentOrigin}/` : `${currentOrigin}${activePath}`;
+
+    let ogUrl = document.querySelector("meta[property='og:url']") as HTMLMetaElement | null;
+    if (!ogUrl) {
+      ogUrl = document.createElement("meta");
+      ogUrl.setAttribute("property", "og:url");
+      document.getElementsByTagName("head")[0].appendChild(ogUrl);
+    }
+    ogUrl.content = fullCanonicalUrl;
+
+    let twitterUrl = document.querySelector("meta[name='twitter:url']") as HTMLMetaElement | null;
+    if (!twitterUrl) {
+      twitterUrl = document.createElement("meta");
+      twitterUrl.name = "twitter:url";
+      document.getElementsByTagName("head")[0].appendChild(twitterUrl);
+    }
+    twitterUrl.content = fullCanonicalUrl;
+
+    let ogImg = document.querySelector("meta[property='og:image']") as HTMLMetaElement | null;
+    if (!ogImg) {
+      ogImg = document.createElement("meta");
+      ogImg.setAttribute("property", "og:image");
+      document.getElementsByTagName("head")[0].appendChild(ogImg);
+    }
+    ogImg.content = activeImage;
+
+    let twitterImg = document.querySelector("meta[name='twitter:image']") as HTMLMetaElement | null;
+    if (!twitterImg) {
+      twitterImg = document.createElement("meta");
+      twitterImg.name = "twitter:image";
+      document.getElementsByTagName("head")[0].appendChild(twitterImg);
+    }
+    twitterImg.content = activeImage;
+
     // OpenGraph Site Name & Type
     let ogSiteName = document.querySelector("meta[property='og:site_name']") as HTMLMetaElement | null;
     if (!ogSiteName) {
@@ -392,7 +515,7 @@ export default function App() {
       ogSiteName.setAttribute("property", "og:site_name");
       document.getElementsByTagName("head")[0].appendChild(ogSiteName);
     }
-    ogSiteName.content = siteContent.brandName || "B2bfiy";
+    ogSiteName.content = brand;
 
     let ogType = document.querySelector("meta[property='og:type']") as HTMLMetaElement | null;
     if (!ogType) {
@@ -402,23 +525,46 @@ export default function App() {
     }
     ogType.content = "website";
 
-    // Canonical link tag
+    // Canonical & International Hreflang link tags
     let canonical = document.querySelector("link[rel='canonical']") as HTMLLinkElement | null;
     if (!canonical) {
       canonical = document.createElement("link");
       canonical.rel = "canonical";
       document.getElementsByTagName("head")[0].appendChild(canonical);
     }
-    canonical.href = typeof window !== "undefined" ? window.location.origin + window.location.pathname : "https://b2bfiy.com";
+    canonical.href = fullCanonicalUrl;
 
-    // Robots meta tag for maximum search crawling and rich snippets
+    const hreflangLocales = [
+      { lang: "x-default", href: fullCanonicalUrl },
+      { lang: "en", href: fullCanonicalUrl },
+      { lang: "en-US", href: fullCanonicalUrl },
+      { lang: "en-GB", href: fullCanonicalUrl },
+      { lang: "en-CA", href: fullCanonicalUrl },
+      { lang: "en-AU", href: fullCanonicalUrl },
+      { lang: "bn", href: fullCanonicalUrl }
+    ];
+
+    hreflangLocales.forEach(({ lang, href }) => {
+      let altLink = document.querySelector(`link[rel='alternate'][hreflang='${lang}']`) as HTMLLinkElement | null;
+      if (!altLink) {
+        altLink = document.createElement("link");
+        altLink.rel = "alternate";
+        altLink.hreflang = lang;
+        document.getElementsByTagName("head")[0].appendChild(altLink);
+      }
+      altLink.href = href;
+    });
+
+    // Robots meta tag: noindex for Admin, index/follow for public pages
     let robotsMeta = document.querySelector("meta[name='robots']") as HTMLMetaElement | null;
     if (!robotsMeta) {
       robotsMeta = document.createElement("meta");
       robotsMeta.name = "robots";
       document.getElementsByTagName("head")[0].appendChild(robotsMeta);
     }
-    robotsMeta.content = "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
+    robotsMeta.content = currentRoute === "admin"
+      ? "noindex, nofollow, noarchive"
+      : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
 
     // 2. Dynamic Favicon
     if (siteContent.faviconUrl) {
@@ -432,42 +578,38 @@ export default function App() {
     }
 
     // 3. Dynamic Meta Description
-    if (siteContent.metaDescription) {
-      let metaDesc = document.querySelector("meta[name='description']") as HTMLMetaElement | null;
-      if (!metaDesc) {
-        metaDesc = document.createElement("meta");
-        metaDesc.name = "description";
-        document.getElementsByTagName("head")[0].appendChild(metaDesc);
-      }
-      metaDesc.content = siteContent.metaDescription;
-
-      let ogDesc = document.querySelector("meta[property='og:description']") as HTMLMetaElement | null;
-      if (!ogDesc) {
-        ogDesc = document.createElement("meta");
-        ogDesc.setAttribute("property", "og:description");
-        document.getElementsByTagName("head")[0].appendChild(ogDesc);
-      }
-      ogDesc.content = siteContent.metaDescription;
-
-      let twDesc = document.querySelector("meta[name='twitter:description']") as HTMLMetaElement | null;
-      if (!twDesc) {
-        twDesc = document.createElement("meta");
-        twDesc.name = "twitter:description";
-        document.getElementsByTagName("head")[0].appendChild(twDesc);
-      }
-      twDesc.content = siteContent.metaDescription;
+    let metaDesc = document.querySelector("meta[name='description']") as HTMLMetaElement | null;
+    if (!metaDesc) {
+      metaDesc = document.createElement("meta");
+      metaDesc.name = "description";
+      document.getElementsByTagName("head")[0].appendChild(metaDesc);
     }
+    metaDesc.content = activeDesc;
+
+    let ogDesc = document.querySelector("meta[property='og:description']") as HTMLMetaElement | null;
+    if (!ogDesc) {
+      ogDesc = document.createElement("meta");
+      ogDesc.setAttribute("property", "og:description");
+      document.getElementsByTagName("head")[0].appendChild(ogDesc);
+    }
+    ogDesc.content = activeDesc;
+
+    let twDesc = document.querySelector("meta[name='twitter:description']") as HTMLMetaElement | null;
+    if (!twDesc) {
+      twDesc = document.createElement("meta");
+      twDesc.name = "twitter:description";
+      document.getElementsByTagName("head")[0].appendChild(twDesc);
+    }
+    twDesc.content = activeDesc;
 
     // 4. Dynamic Meta Keywords
-    if (siteContent.seoKeywords) {
-      let metaKey = document.querySelector("meta[name='keywords']") as HTMLMetaElement | null;
-      if (!metaKey) {
-        metaKey = document.createElement("meta");
-        metaKey.name = "keywords";
-        document.getElementsByTagName("head")[0].appendChild(metaKey);
-      }
-      metaKey.content = siteContent.seoKeywords;
+    let metaKey = document.querySelector("meta[name='keywords']") as HTMLMetaElement | null;
+    if (!metaKey) {
+      metaKey = document.createElement("meta");
+      metaKey.name = "keywords";
+      document.getElementsByTagName("head")[0].appendChild(metaKey);
     }
+    metaKey.content = activeKeywords;
 
     // 5. Dynamic Google Site Verification
     if (siteContent.googleSiteVerification) {
@@ -480,7 +622,7 @@ export default function App() {
       metaGsv.content = siteContent.googleSiteVerification;
     }
 
-    // Dynamic Schema.org JSON-LD Structured Data
+    // 6. Dynamic Schema.org JSON-LD Structured Data
     if (typeof window !== "undefined") {
       const schemaScriptId = "schema-org-jsonld";
       let schemaScript = document.getElementById(schemaScriptId) as HTMLScriptElement | null;
@@ -491,98 +633,199 @@ export default function App() {
         document.head.appendChild(schemaScript);
       }
 
-      const currentOrigin = window.location.origin;
+      // BreadcrumbList schema
+      const breadcrumbSchema = {
+        "@type": "BreadcrumbList",
+        "@id": `${fullCanonicalUrl}#breadcrumb`,
+        "itemListElement": breadcrumbItems.map((item, index) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "name": item.name,
+          "item": item.url
+        }))
+      };
+
+      // Organization / LocalBusiness schema
+      const businessSchema = {
+        "@type": ["ProfessionalService", "LocalBusiness", "Organization"],
+        "@id": `${currentOrigin}/#agency`,
+        "name": brand,
+        "alternateName": "B2bfiy Creative Agency Dhaka",
+        "url": currentOrigin,
+        "logo": siteContent.logoUrl || `${currentOrigin}/logo.png`,
+        "image": activeImage,
+        "description": siteContent.metaDescription || "Top-rated creative digital growth agency in Dhaka offering high-converting web design, corporate branding, video editing, and social media retainers.",
+        "telephone": siteContent.floatingCall || siteContent.phone || "+8801712345678",
+        "email": siteContent.email || "hello@b2bfiy.com",
+        "priceRange": "$$",
+        "currenciesAccepted": "USD, EUR, GBP, CAD, AUD, AED, SGD, BDT",
+        "paymentAccepted": "Credit Card, Stripe, PayPal, Wire Transfer, Wise, Bank Transfer, bKash, Nagad",
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            "opens": "09:00",
+            "closes": "22:00"
+          }
+        ],
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Gulshan / Banani",
+          "addressLocality": "Dhaka",
+          "addressRegion": "Dhaka Division",
+          "postalCode": "1212",
+          "addressCountry": "BD"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": "23.8103",
+          "longitude": "90.4125"
+        },
+        "areaServed": [
+          { "@type": "Place", "name": "Worldwide" },
+          { "@type": "Country", "name": "United States" },
+          { "@type": "Country", "name": "United Kingdom" },
+          { "@type": "Country", "name": "Canada" },
+          { "@type": "Country", "name": "Australia" },
+          { "@type": "Country", "name": "United Arab Emirates" },
+          { "@type": "Country", "name": "Singapore" },
+          { "@type": "Country", "name": "Germany" },
+          { "@type": "Country", "name": "Bangladesh" },
+          { "@type": "City", "name": "Dhaka" }
+        ],
+        "sameAs": [
+          siteContent.socials?.facebook || "https://facebook.com/b2bfiy",
+          siteContent.socials?.instagram || "https://instagram.com/b2bfiy",
+          siteContent.socials?.linkedin || "https://linkedin.com/company/b2bfiy"
+        ].filter(Boolean),
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "5.0",
+          "bestRating": "5",
+          "worstRating": "1",
+          "ratingCount": "48",
+          "reviewCount": "48"
+        },
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Creative & Digital Growth Services",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "High-Converting Web Development & UI/UX Design",
+                "description": "Custom Next.js/React business websites, SaaS platforms, and e-commerce stores engineered for sub-second speeds and maximum conversion rates."
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Corporate Brand Identity & Graphic Design",
+                "description": "Comprehensive brand guidelines, vector logo design, product packaging, and high-impact digital social graphics."
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Cinematic & Viral Video Editing for Reels & TikTok",
+                "description": "Short-form video editing with retention hooks, kinetic typography, dynamic zooms, and sound design."
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Full-Service Monthly Social Media Retainers",
+                "description": "Dedicated monthly digital growth retainers covering content creation, daily posting, copywriting, and ad management."
+              }
+            }
+          ]
+        }
+      };
+
+      // WebSite schema with search action
+      const websiteSchema = {
+        "@type": "WebSite",
+        "@id": `${currentOrigin}/#website`,
+        "url": currentOrigin,
+        "name": brand,
+        "description": siteContent.metaDescription || activeDesc,
+        "publisher": {
+          "@id": `${currentOrigin}/#agency`
+        }
+      };
+
+      const graphElements: any[] = [businessSchema, websiteSchema, breadcrumbSchema];
+
+      // FAQPage schema on /faq or on Home
+      if (currentRoute === "faq" || currentRoute === "home") {
+        graphElements.push({
+          "@type": "FAQPage",
+          "@id": `${fullCanonicalUrl}#faq`,
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What core digital services does B2bfiy offer?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "B2bfiy provides four core premium services: 1. Full-Stack Web Development & E-Commerce Stores; 2. Graphic Design & Corporate Visual Identity; 3. Viral Video Editing for TikTok, Reels & YouTube; 4. Monthly Social Media Management & Growth Retainers."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How fast are project turnarounds at B2bfiy?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Standard business websites are delivered live within 7 to 10 days. Social media graphics and short-form video reels have a rapid turnaround of 24 to 48 hours."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do monthly growth retainers work?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Monthly retainers provide dedicated agency capacity with fixed pricing and zero surprise fees. You receive scheduled batches of high-retention graphics, video reels, content calendars, and priority engineering support."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Do I own 100% of the deliverables and source code?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Upon completion of milestone clearance, you retain 100% full intellectual property ownership of all custom website code, raw design files, vector logos, and video footage."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I claim a free digital growth audit for my business?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! We offer a complimentary 15-point digital audit covering your website conversion rate, mobile speed, brand consistency, and social media reach with zero obligation."
+              }
+            }
+          ]
+        });
+      }
+
       const structuredData = {
         "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "ProfessionalService",
-            "@id": `${currentOrigin}/#agency`,
-            "name": siteContent.brandName || "B2bfiy",
-            "url": currentOrigin,
-            "logo": siteContent.logoUrl || `${currentOrigin}/logo.png`,
-            "image": siteContent.logoUrl || `${currentOrigin}/logo.png`,
-            "description": siteContent.metaDescription || "Top-rated digital agency in Dhaka offering high-converting web design, video production, graphic design, and social media management.",
-            "telephone": siteContent.floatingCall || "+8801712345678",
-            "email": "hello@b2bfiy.com",
-            "priceRange": "$$",
-            "address": {
-              "@type": "PostalAddress",
-              "addressLocality": "Dhaka",
-              "addressRegion": "Dhaka Division",
-              "addressCountry": "BD"
-            },
-            "geo": {
-              "@type": "GeoCoordinates",
-              "latitude": "23.8103",
-              "longitude": "90.4125"
-            },
-            "areaServed": [
-              { "@type": "Country", "name": "Bangladesh" },
-              { "@type": "City", "name": "Dhaka" },
-              { "@type": "Country", "name": "United States" },
-              { "@type": "Country", "name": "United Kingdom" }
-            ],
-            "hasOfferCatalog": {
-              "@type": "OfferCatalog",
-              "name": "Digital Services",
-              "itemListElement": [
-                {
-                  "@type": "Offer",
-                  "itemOffered": {
-                    "@type": "Service",
-                    "name": "High-Converting Web Development & UI/UX"
-                  }
-                },
-                {
-                  "@type": "Offer",
-                  "itemOffered": {
-                    "@type": "Service",
-                    "name": "Brand Identity & Graphic Design"
-                  }
-                },
-                {
-                  "@type": "Offer",
-                  "itemOffered": {
-                    "@type": "Service",
-                    "name": "Cinematic & Viral Video Editing"
-                  }
-                },
-                {
-                  "@type": "Offer",
-                  "itemOffered": {
-                    "@type": "Service",
-                    "name": "Social Media Management & Growth Retainers"
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "@type": "WebSite",
-            "@id": `${currentOrigin}/#website`,
-            "url": currentOrigin,
-            "name": siteContent.brandName || "B2bfiy",
-            "description": siteContent.metaDescription,
-            "publisher": {
-              "@id": `${currentOrigin}/#agency`
-            }
-          }
-        ]
+        "@graph": graphElements
       };
+
       schemaScript.textContent = JSON.stringify(structuredData);
     }
 
-    // 6. Dynamic Meta Pixel (Facebook Pixel) Setup
+    // 7. Dynamic Meta Pixel (Facebook Pixel) Setup
     if (siteContent.metaPixelId) {
       const pixelId = siteContent.metaPixelId.trim();
       if (pixelId && typeof window !== "undefined") {
-        // Prevent duplicate script loading
         const scriptId = "meta-pixel-script";
         let existingScript = document.getElementById(scriptId);
         
         if (!existingScript) {
-          // Meta Pixel base setup code
           (function(f: any, b: any, e: any, v: any, n?: any, t?: any, s?: any) {
             if (f.fbq) return;
             n = f.fbq = function() {
@@ -601,9 +844,6 @@ export default function App() {
             s.parentNode.insertBefore(t, s);
           })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
 
-          // Initialize Pixel. PageView is tracked separately (client + server,
-          // deduplicated) by the route-change effect below, so we don't fire
-          // it a second time here.
           try {
             (window as any).fbq('init', pixelId);
             console.log(`[SEO & Analytics] Meta Pixel ${pixelId} successfully initialized.`);
@@ -614,7 +854,7 @@ export default function App() {
       }
     }
 
-    // 7. Dynamic Google Analytics 4 (gtag.js) Setup
+    // 8. Dynamic Google Analytics 4 (gtag.js) Setup
     if (siteContent.ga4MeasurementId) {
       const ga4Id = siteContent.ga4MeasurementId.trim();
       if (ga4Id && typeof window !== "undefined") {
@@ -622,7 +862,6 @@ export default function App() {
         let existingScript = document.getElementById(scriptId);
 
         if (!existingScript) {
-          // Initialize dataLayer and gtag function
           (window as any).dataLayer = (window as any).dataLayer || [];
           function gtag(...args: any[]) {
             (window as any).dataLayer.push(args);
@@ -642,6 +881,8 @@ export default function App() {
       }
     }
   }, [
+    currentRoute,
+    selectedProjectSlug,
     siteContent.brandName,
     siteContent.metaTitle,
     siteContent.faviconUrl,
@@ -649,7 +890,9 @@ export default function App() {
     siteContent.seoKeywords,
     siteContent.googleSiteVerification,
     siteContent.metaPixelId,
-    siteContent.ga4MeasurementId
+    siteContent.ga4MeasurementId,
+    siteContent.hero?.imageUrl,
+    portfolios
   ]);
 
   // 6b. Server-side PageView tracking (Meta CAPI + GA4), fired on every route
