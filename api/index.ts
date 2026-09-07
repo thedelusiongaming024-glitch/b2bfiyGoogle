@@ -1743,7 +1743,7 @@ async function sendToMetaCapi(body: any) {
 }
 
 async function sendToGa4(body: any) {
-  const measurementId = process.env.GA4_MEASUREMENT_ID || "G-1HYPSQV3PM";
+  const measurementId = process.env.GA4_MEASUREMENT_ID || "G-8X7F3D162H";
   const apiSecret = process.env.GA4_API_SECRET;
   if (!measurementId || !apiSecret) return { skipped: "ga4_not_configured" };
 
