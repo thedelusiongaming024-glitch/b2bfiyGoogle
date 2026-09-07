@@ -369,7 +369,7 @@ export default function App() {
     
     let activeTitle = "";
     let activeDesc = "";
-    let activeKeywords = siteContent.seoKeywords?.trim() || "best web design company in Bangladesh, digital marketing agency Dhaka, creative agency Bangladesh, professional video editing Dhaka, corporate branding and logo design Bangladesh, social media marketing agency Dhaka, UI UX design Bangladesh, short-form video editing Reels TikTok, high converting landing page development, e-commerce website development Dhaka, B2B growth retainers Bangladesh";
+    let activeKeywords = siteContent.seoKeywords?.trim() || "best web design company in Bangladesh, top web development agency in Dhaka, digital marketing agency Dhaka, creative digital agency Bangladesh, corporate branding agency Dhaka, professional logo design service Bangladesh, video editing agency Bangladesh, short-form video editing reels Dhaka, monthly social media management packages Bangladesh, ecommerce website development with bKash Nagad gateway, custom Next.js React website developer Dhaka, high converting landing page design service Bangladesh, affordable business website design packages Bangladesh, offshore web design and development agency, hire dedicated React web designers Bangladesh, short form video editing service for creators, B2B digital growth retainers, UI UX design Bangladesh, ওয়েব ডিজাইন কোম্পানি বাংলাদেশ, ডিজিটাল মার্কেটিং এজেন্সি ঢাকা, ই-কমার্স ওয়েবসাইট তৈরি, প্রফেশনাল ভিডিও এডিটিং সার্ভিস";
     let activeImage = siteContent.hero?.imageUrl || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&h=630&q=80";
     let activePath = "/";
     let breadcrumbItems: Array<{ name: string; url: string }> = [{ name: "Home", url: currentOrigin }];

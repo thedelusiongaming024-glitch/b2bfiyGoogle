@@ -2668,9 +2668,9 @@ export default function Admin({
                           const brand = editedContent.brandName || "B2bfiy";
                           setEditedContent({
                             ...editedContent,
-                            metaTitle: `${brand} | Premier Digital Agency in Dhaka - Web Design, Branding & Video`,
-                            metaDescription: `Scale your business with ${brand}. Dhaka's top creative agency specializing in high-converting web design, corporate branding, viral video editing, and social media retainers.`,
-                            seoKeywords: "digital marketing agency Dhaka, best web design company in Bangladesh, professional video editing Dhaka, creative agency Bangladesh, corporate branding and logo design Dhaka, social media marketing agency Dhaka, UI UX design Bangladesh, short-form video editing Reels TikTok, high converting landing page development, B2B growth retainers Bangladesh"
+                            metaTitle: `${brand} | Best Web Design & Creative Digital Agency in Bangladesh - Dhaka`,
+                            metaDescription: `Scale your business with ${brand}. Dhaka's top creative agency specializing in high-converting custom websites, corporate branding, viral video reels, and monthly growth retainers.`,
+                            seoKeywords: "best web design company in Bangladesh, top web development agency in Dhaka, digital marketing agency Dhaka, creative digital agency Bangladesh, corporate branding agency Dhaka, professional logo design service Bangladesh, video editing agency Bangladesh, short-form video editing reels Dhaka, monthly social media management packages Bangladesh, ecommerce website development with bKash Nagad gateway, custom Next.js React website developer Dhaka, high converting landing page design service Bangladesh, affordable business website design packages Bangladesh, offshore web design and development agency, hire dedicated React web designers Bangladesh, short form video editing service for creators, B2B digital growth retainers, UI UX design Bangladesh, ওয়েব ডিজাইন কোম্পানি বাংলাদেশ, ডিজিটাল মার্কেটিং এজেন্সি ঢাকা, ই-কমার্স ওয়েবসাইট তৈরি, প্রফেশনাল ভিডিও এডিটিং সার্ভিস"
                           });
                           triggerSuccess("🏆 Applied Top-10 Ranking Master Formula!");
                         }}
@@ -2687,13 +2687,29 @@ export default function Admin({
                             ...editedContent,
                             metaTitle: `${brand} - Top Digital Presence Agency | Web, Video & Social Media`,
                             metaDescription: `Get a modern, high-converting digital presence with ${brand}. We build custom business websites, cinematic video reels, graphics, and full-service social growth.`,
-                            seoKeywords: "digital presence agency, business website development, social media growth retainers, video production agency, graphic design services, B2B marketing, conversion rate optimization"
+                            seoKeywords: "digital presence agency, business website development, social media growth retainers, video production agency, graphic design services, B2B marketing, conversion rate optimization, ecommerce website development Dhaka, branding agency Bangladesh"
                           });
                           triggerSuccess("🚀 Applied High-Converting B2B Retainers Formula!");
                         }}
                         className="self-start sm:self-auto px-3 py-1.5 border border-[#F2E4E2] bg-white hover:bg-[#FFF7F5] text-gray-700 hover:text-[#FF2D2D] rounded-xl text-[11px] font-bold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 shadow-2xs"
                       >
                         <span>🚀 B2B Retainers Preset</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const brand = editedContent.brandName || "B2bfiy";
+                          setEditedContent({
+                            ...editedContent,
+                            metaTitle: `${brand} | Offshore Web Design & Dedicated Creative Agency`,
+                            metaDescription: `Hire ${brand} for offshore Next.js web development, UI/UX design, viral short-form video editing, and dedicated creative retainers for international clients.`,
+                            seoKeywords: "offshore web design and development agency, hire dedicated React web designers, short form video editing service for creators, B2B growth retainers, remote digital agency Bangladesh, custom Shopify and Next.js ecommerce developers, conversion rate optimization agency"
+                          });
+                          triggerSuccess("🌐 Applied Offshore & Global Export Formula!");
+                        }}
+                        className="self-start sm:self-auto px-3 py-1.5 border border-[#F2E4E2] bg-white hover:bg-[#FFF7F5] text-gray-700 hover:text-[#FF2D2D] rounded-xl text-[11px] font-bold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 shadow-2xs"
+                      >
+                        <span>🌐 Global / Offshore Preset</span>
                       </button>
                     </div>
                   </div>
@@ -2892,17 +2908,26 @@ export default function Admin({
                       <div className="flex flex-wrap items-center gap-1.5 pt-1.5">
                         <span className="text-[9px] font-bold text-gray-400 uppercase">Add Keyword:</span>
                         {[
-                          "digital marketing agency Dhaka",
                           "best web design company in Bangladesh",
-                          "professional video editing Dhaka",
-                          "creative agency Bangladesh",
-                          "corporate branding and logo design Dhaka",
-                          "social media marketing agency Dhaka",
+                          "top web development agency in Dhaka",
+                          "digital marketing agency Dhaka",
+                          "creative digital agency Bangladesh",
+                          "corporate branding agency Dhaka",
+                          "professional logo design service Bangladesh",
+                          "video editing agency Bangladesh",
+                          "short-form video editing reels Dhaka",
+                          "monthly social media management packages Bangladesh",
+                          "ecommerce website development with bKash Nagad gateway",
+                          "custom Next.js React website developer Dhaka",
+                          "high converting landing page design service Bangladesh",
+                          "affordable business website design packages Bangladesh",
+                          "offshore web design and development agency",
+                          "hire dedicated React web designers Bangladesh",
+                          "short form video editing service for creators",
+                          "B2B digital growth retainers",
                           "UI UX design Bangladesh",
-                          "short-form video editing Reels TikTok",
-                          "high converting landing page development",
-                          "B2B growth retainers Bangladesh",
-                          "e-commerce web development Dhaka"
+                          "ওয়েব ডিজাইন কোম্পানি বাংলাদেশ",
+                          "ডিজিটাল মার্কেটিং এজেন্সি ঢাকা"
                         ].map((sugg) => {
                           const currentArr = (editedContent.seoKeywords || "")
                             .split(",")
